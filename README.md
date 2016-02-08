@@ -1,4 +1,4 @@
-# ppmc
+# ppmc (just planned)
 Metacompiler C++ for using procedural-parametric features
 
 

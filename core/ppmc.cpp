@@ -1,53 +1,69 @@
-#include <boost/program_options.hpp>
+
 #include <iostream>
+#include <fstream>
+#include <string>
+#include <map>
 
-namespace opt = boost::program_options;
 
+using std::ifstream;
 
-int main(int argc, char *argv[])
+struct MacroDesc
 {
-	// Constructing an options describing variable and giving it a
-	// textual description "All options"
-	opt::options_description desc("All options");
+  std::string name;
+  std::string value;
+};
 
-	// When we are adding options, first parameter is a name
-	// to be used in command line. Second parameter is a type
-	// of that option, wrapped in value<> class. Third parameter
-	// must be a short description of that option
+using IndexedMacrocesType = std::map<size_t, unsigned>;
 
-	const char txt_help[]		("help");
-	const char txt_file[]		("file");
-	const char txt_output_path[]("output-path");
+void fillMacroIdxs(const MacroDesc(&container)[2], IndexedMacrocesType& macroces, const std::string& str)
+{
+  for (auto& m : container) 
+  {
+    auto cur_id = &m - &container[0];
+    auto& cur_name = m.name;
+    size_t nPos = str.find(cur_name, 0);
+    while (nPos != std::string::npos) 
+    {
+      macroces[nPos] = cur_id;
+      // TODO: fill arguments here
+      //find '('&& ')'
+      //extract arguments
+      // insert arguments to MacroDesc 'value' {1},{2}..{n}
 
-	desc.add_options()
-		(txt_file, opt::value<std::string>(), "which file needs to be processed")
-		(txt_output_path, opt::value<std::string>(), "path to processed file")
-		(txt_help, "produce help message")
-		;
+      nPos = str.find(cur_name, nPos + 1);
+    }
+  }
+}
 
-	// Variable to store our command line arguments
-	opt::variables_map vm;
+int main(int argc, char * argv[])
+{
+  //ifstream ifst(argv[1]);
+  //if (!ifst.open) {
+  //  std::cerr << "Wrong filename\n";
+  //}
 
-	// Parsing and storing arguments
-	opt::store(opt::parse_command_line(argc, argv, desc), vm);
+  std::string str("first MACRO2 line MACRO1 of MACRO2 file\n");
+  //               first float() line int() of float() file
 
-	opt::notify(vm);
+  IndexedMacrocesType macroces;
+  MacroDesc macro_descs[] = { { "MACRO1", "int()" } ,{ "MACRO2", "float()" } };
+  fillMacroIdxs(macro_descs, macroces, str);
 
-	if (vm.count(txt_help)) {
-		std::cout << desc << "\n";
-		return 1;
-	}
+  std::string result;
+  size_t prev_idx = 0;
+  for (auto& idxs : macroces) 
+  {
+    auto cur_macro_idx = idxs.second;
+    auto cur_pos = idxs.first;
+    result += str.substr(prev_idx, cur_pos - prev_idx);
 
-	if (vm.count(txt_file) == 0 || vm.count(txt_output_path) == 0) {
-		std::cout << "Wrong parameters\n";
-		return 1;
-	}
+    auto& replacer = macro_descs[cur_macro_idx];
+    result += replacer.value;
+    prev_idx = cur_pos + replacer.name.size();
+  }
+  result += str.substr(prev_idx);
 
-	std::cout << "File: "
-		<< vm[txt_file].as<std::string>() 
-		<< ", Path: "
-		<< vm[txt_output_path].as<std::string>()
-		<< std::endl;
+  std::cerr << result << std::endl;
 
-	return 0;
+  return EXIT_SUCCESS;
 }

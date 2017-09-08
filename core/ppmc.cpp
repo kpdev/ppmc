@@ -42,11 +42,48 @@ int main(int argc, char * argv[])
   //  std::cerr << "Wrong filename\n";
   //}
 
-  std::string str("first MACRO2 line MACRO1 of MACRO2 file\n");
-  //               first float() line int() of float() file
 
+  std::string str("TEST_TEXT_1 CREATE_GENERALIZATION(Name) TEST_TEXT_2 TEST_TEXT_3 DEFINE_GENERALIZATION_METHOD(Name) TEST_TEXT_4\n");
+  /*
+  OUTPUT:
+  TEST_TEXT_1
+        struct Name {
+            int mark;
+        };
+        int GetSpecNumAndIncrementName();
+       TEST_TEXT_2 TEST_TEXT_3
+        namespace {
+            int specNumber = 0;
+        }
+        int GetSpecNumAndIncrementName() {
+            return specNumber++;
+        }
+       TEST_TEXT_4
+  
+  */
   IndexedMacrocesType macroces;
-  MacroDesc macro_descs[] = { { "MACRO1", "int()" } ,{ "MACRO2", "float()" } };
+  MacroDesc macro_descs[] = { 
+    { 
+      "CREATE_GENERALIZATION(Name)", 
+      R"raw(
+        struct Name { 
+            int mark; 
+        }; 
+        int GetSpecNumAndIncrementName();
+      )raw" 
+    } ,
+    { 
+      "DEFINE_GENERALIZATION_METHOD(Name)", 
+      R"raw(
+        namespace { 
+            int specNumber = 0; 
+        } 
+        int GetSpecNumAndIncrementName() { 
+            return specNumber++; 
+        }
+      )raw" 
+    } 
+  };
   fillMacroIdxs(macro_descs, macroces, str);
 
   std::string result;

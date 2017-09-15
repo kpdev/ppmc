@@ -66,10 +66,10 @@ int main(int argc, char * argv[])
     { 
       "CREATE_GENERALIZATION(Name)", 
       R"raw(
-        struct Name { 
+        struct [<Name>] { 
             int mark; 
         }; 
-        int GetSpecNumAndIncrementName();
+        int GetSpecNumAndIncrement[<Name>]();
       )raw" 
     } ,
     { 
@@ -78,7 +78,7 @@ int main(int argc, char * argv[])
         namespace { 
             int specNumber = 0; 
         } 
-        int GetSpecNumAndIncrementName() { 
+        int GetSpecNumAndIncrement[<Name>]() { 
             return specNumber++; 
         }
       )raw" 

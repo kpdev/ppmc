@@ -3,13 +3,15 @@
 #include <fstream>
 #include <string>
 #include <map>
-
+#include <vector>
 
 using std::ifstream;
+using VectorStr = std::vector<std::string>;
 
 struct MacroDesc
 {
   std::string name;
+  VectorStr arguments;
   std::string value;
 };
 
@@ -35,6 +37,18 @@ void fillMacroIdxs(const MacroDesc(&container)[2], IndexedMacrocesType& macroces
   }
 }
 
+VectorStr get_arguments(const std::string& str, size_t& idx)
+{
+  // TODO: Implement arguments parsing
+  return VectorStr();
+}
+
+std::string replace_placeholders_in_macro(const MacroDesc&  macro, const VectorStr& arguments)
+{
+  // TODO: Implement;
+  return macro.value;
+}
+
 int main(int argc, char * argv[])
 {
   //ifstream ifst(argv[1]);
@@ -43,7 +57,7 @@ int main(int argc, char * argv[])
   //}
 
 
-  std::string str("TEST_TEXT_1 CREATE_GENERALIZATION(Name) TEST_TEXT_2 TEST_TEXT_3 DEFINE_GENERALIZATION_METHOD(Name) TEST_TEXT_4\n");
+  std::string str("TEST_TEXT_1 CREATE_GENERALIZATION(ARG_1) TEST_TEXT_2 TEST_TEXT_3 DEFINE_GENERALIZATION_METHOD(ARG_2) TEST_TEXT_4 CREATE_GENERALIZATION(ARG_3)  \n");
   /*
   OUTPUT:
   TEST_TEXT_1
@@ -64,7 +78,10 @@ int main(int argc, char * argv[])
   IndexedMacrocesType macroces;
   MacroDesc macro_descs[] = { 
     { 
-      "CREATE_GENERALIZATION(Name)", 
+      "CREATE_GENERALIZATION", 
+      {
+        "Name"
+      },
       R"raw(
         struct [<Name>] { 
             int mark; 
@@ -73,7 +90,10 @@ int main(int argc, char * argv[])
       )raw" 
     } ,
     { 
-      "DEFINE_GENERALIZATION_METHOD(Name)", 
+      "DEFINE_GENERALIZATION_METHOD", 
+      {
+        "Name"
+      },
       R"raw(
         namespace { 
             int specNumber = 0; 
@@ -95,8 +115,11 @@ int main(int argc, char * argv[])
     result += str.substr(prev_idx, cur_pos - prev_idx);
 
     auto& replacer = macro_descs[cur_macro_idx];
-    result += replacer.value;
     prev_idx = cur_pos + replacer.name.size();
+    auto arguments = get_arguments(str, prev_idx);
+    auto replace_text = replace_placeholders_in_macro(replacer, arguments);
+
+    result += replace_text;
   }
   result += str.substr(prev_idx);
 

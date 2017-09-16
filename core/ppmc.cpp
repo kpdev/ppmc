@@ -65,8 +65,10 @@ MacroDesc macro_descs[] = {
   }
 };
 
+constexpr size_t macroces_count = sizeof(macro_descs) / sizeof(macro_descs[0]);
 
-void fill_macro_idxs(const MacroDesc(&container)[3], IndexedMacrocesType& macroces, const std::string& str)
+
+void fill_macro_idxs(const MacroDesc(&container)[macroces_count], IndexedMacrocesType& macroces, const std::string& str)
 {
   for (auto& m : container) 
   {
@@ -152,6 +154,8 @@ int main(int argc, char * argv[])
   std::string str("TEST_TEXT_1 CREATE_GENERALIZATION(ARG_1) CREATE_SPECIALIZATION(NameArg, BNameArg, SNameArg)" 
     "TEST_TEXT_2 TEST_TEXT_3 DEFINE_GENERALIZATION_METHOD(ARG_2)"
     " TEST_TEXT_4 CREATE_GENERALIZATION(ARG_3)  \n");
+
+  //std::string str("Begin test text CREATE_SPECIALIZATION(NameArg, BNameArg, SNameArg) end test text\n");
 
   IndexedMacrocesType macroces;
 

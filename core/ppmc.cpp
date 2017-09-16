@@ -4,9 +4,13 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <cassert>
+#include <memory>
+
 
 using std::ifstream;
 using VectorStr = std::vector<std::string>;
+
 
 struct MacroDesc
 {
@@ -37,17 +41,40 @@ void fillMacroIdxs(const MacroDesc(&container)[2], IndexedMacrocesType& macroces
   }
 }
 
+
+std::string parse_arg(const std::string& str, size_t& idx)
+{
+  std::string result;
+  while (str[idx] != ',' && str[idx] != ')') 
+  {
+    result += str[idx++];
+  }
+  return result;
+}
+
+
 VectorStr get_arguments(const std::string& str, size_t& idx)
 {
-  // TODO: Implement arguments parsing
-  return VectorStr();
+  assert(str[idx] == '(');
+  idx++;
+  VectorStr result;
+  while (str[idx] != ')') 
+  {
+    auto cur_arg = parse_arg(str, idx);
+    result.emplace_back(std::move(cur_arg));
+    if (str[idx] == ',')
+      idx++;
+  }
+  return result;
 }
+
 
 std::string replace_placeholders_in_macro(const MacroDesc&  macro, const VectorStr& arguments)
 {
   // TODO: Implement;
   return macro.value;
 }
+
 
 int main(int argc, char * argv[])
 {
@@ -57,7 +84,7 @@ int main(int argc, char * argv[])
   //}
 
 
-  std::string str("TEST_TEXT_1 CREATE_GENERALIZATION(ARG_1) TEST_TEXT_2 TEST_TEXT_3 DEFINE_GENERALIZATION_METHOD(ARG_2) TEST_TEXT_4 CREATE_GENERALIZATION(ARG_3)  \n");
+  std::string str("TEST_TEXT_1 CREATE_GENERALIZATION(ARG_1,TEST_ARG_1) TEST_TEXT_2 TEST_TEXT_3 DEFINE_GENERALIZATION_METHOD(ARG_2) TEST_TEXT_4 CREATE_GENERALIZATION(ARG_3)  \n");
   /*
   OUTPUT:
   TEST_TEXT_1

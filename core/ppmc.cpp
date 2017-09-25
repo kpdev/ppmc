@@ -62,8 +62,160 @@ MacroDesc macro_descs[] = {
             return specNumber++; 
         }
       )raw"
+  },
+  {
+    "CREATE_REG_MARK_METHOD",
+    {
+      "[<SpecName>]"
+    },
+  R"raw(
+      namespace {
+        int regMark[<SpecName>] = -1;
+      }
+      int GetRegMark[<SpecName>](){
+        return regMark[<SpecName>];
+      }
+    )raw"
+  },
+  {
+    "CREATE_SPECIALIZATION_DECORATOR",
+    {
+      "[<Name>]",
+      "[<BaseName>]",
+      "[<GeneralizationName>]",
+      "[<AddFieldType>]",
+      "[<AddFieldName>]"
+    },
+  R"raw(
+      struct [<Name>] : [<BaseName>]{
+        [<AddFieldType>] [<AddFieldName>];
+        [<BaseName>]* [<GeneralizationName>];
+      }
+      int GetRegMark[<Name>];
+      )raw"
+  },
+  {
+    "REGISTER_SPECIALIZATION",
+    {
+      "[<GenName>]",
+      "[<SpecName>]",
+      "[<DebugInfo>]"
+    },
+  R"raw(
+      namespace {
+        void InitRegMark[<SpecName>](){
+          regMark[<SpecName>] = GetSpecNumAndIncrement[<GenName>]();
+        }
+        if ([<DebugInfo>] != nullptr){
+          cout <<\"regmark: \" << regmark[<SpecName>] << endl;
+        }
+        ClassMarkRegistrar reg[<SpecName>](InitRegMark[<SpecName>], [<DebugInfo>])
+      }
+    )raw"
+  },
+  {
+    "GET_REG_MARK_METHOD",
+    {
+      "[<Type>]"
+    },
+  R"raw(
+      GetRegMark[<Type>]()
+    )raw"
+  },
+  {
+    "REGISTER_METHOD",
+    {
+      "[<Container>]",
+      "[<Method>]",
+      "[<Mark>]",
+      "[<DebugInfo>]",
+    },
+    R"raw(
+      MethodRegistrar regMethod[<Method>]([<Container>], [<Method>], [<Mark>], [<DebugInfo>]);
+    )raw"
+  },
+  {
+    "REGISTER_METHOD_WITH_CHECK_RET_PTR",
+    {
+      "[<Container>]",
+      "[<Method>]",
+      "[<DerivedClass>]",
+      "[<DebugInfo>]",
+      "[<FileMark>]",
+      "[<RetType>]"
+    },
+  R"raw(
+      namespace{
+        [<RetType>] * __Inner_Check_[<Method>] (int file_mark) {
+          if(file_mark==[<FileMark>]){
+            auto ptr = [<Method>];
+            return ptr;
+          }
+          return nullptr;
+        }
+        REGISTER_METHOD(Container[<FuncArray>], __Inner_Check_[<Method>], GET_REG_MARK_METHOD([<DerivedClass]), [<DebugInfo>]);
+       }
+    )raw"
+  },
+  /*TODO: ADD REGISTER_METHOD_WITH_CHECK*/
+  /*TODO: ADD CREATE_MM_SPEC*/
+  {
+    "BEGIN_REG_MM",
+    {
+      "[<ArrayName>]"
+    },
+  R"raw(
+      namespace {
+        class [<ArrayName>]MMArrayRegister(const char *regInfo = nullptr){
+          if(regInfo != nullptr) cout << \"reginfo\" << endl;
+          auto & _array_alias = [<ArrayName>]MMArray;
+        }
+      
+    )raw"
+
+    /*
+    #define BEGIN_REG_MM(ArrayName) \
+    namespace { \
+	    class ArrayName##MMArray##Register { \
+	    public: \
+		    ArrayName##MMArray##Register(const char * regInfo = nullptr) { \
+			    if (regInfo != nullptr) cout << regInfo << endl; \
+			    auto& _array_alias = ArrayName##MMArray;
+    
+    */
+
+
+  },
+
+  {
+    "REG_MM_SPEC",
+    {
+      "[<SpecName>]",
+      "[<Type1>]",
+      "[<Type2>]"
+    },
+  R"raw(
+      
+      _array_alias[GET_REG_MARK_METHOD([<Type1>])] [GET_REG_MARK_METHOD[<Type2>])] = [<SpecName>];
+      cout << \"multimethodFunc[\" << GET_REG_MARK_METHOD([<Type1>]) << \"][\" << GET_REG_MARK_METHOD([<Type2>]) << \" ] = \" << #[<SpecName>] << endl;
+      
+    )raw"
+  },
+  {
+    "END_REG_MM",
+    {
+      "[<OptionalMessage>]"
+    },
+  R"raw(
+        }
+      }
+      
+      pplib_mm_reg##__COUNTER__([<OptionalMessage>]); /*CHECK GLOBAL DEFINITION COUNTER!!!*/
+      
+    )raw"
   }
 };
+
 
 constexpr size_t macroces_count = sizeof(macro_descs) / sizeof(macro_descs[0]);
 

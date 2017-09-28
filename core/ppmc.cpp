@@ -150,12 +150,17 @@ int main(int argc, char * argv[])
   //  std::cerr << "Wrong filename\n";
   //}
 
+  const char * path_to_test_file = "test/test.txt";
 
-  std::string str("TEST_TEXT_1 CREATE_GENERALIZATION(ARG_1) CREATE_SPECIALIZATION(NameArg, BNameArg, SNameArg)" 
-    "TEST_TEXT_2 TEST_TEXT_3 DEFINE_GENERALIZATION_METHOD(ARG_2)"
-    " TEST_TEXT_4 CREATE_GENERALIZATION(ARG_3)  \n");
+  std::ifstream ifstr(path_to_test_file);
 
-  //std::string str("Begin test text CREATE_SPECIALIZATION(NameArg, BNameArg, SNameArg) end test text\n");
+  if (!ifstr.is_open())     {
+    std::cerr << "Cannot open the file\n";
+    return EXIT_FAILURE;
+  }
+
+  std::string str((std::istreambuf_iterator<char>(ifstr)),
+                   std::istreambuf_iterator<char>());
 
   IndexedMacrocesType macroces;
 

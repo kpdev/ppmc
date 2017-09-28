@@ -1,0 +1,3 @@
+Begin test
+ text CREATE_SPECIALIZATION(NameArg, BNameArg, SNameArg) end test 
+ text

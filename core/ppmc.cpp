@@ -33,6 +33,7 @@ MacroDesc macro_descs[] = {
         struct [<Name>] : [<BaseName>] {
             using base_type = [<BaseName>];
             [<SpecName>] _spec;
+            TEST_NESTING([<Name>]);
         };
         int GetRegMark[<Name>]();
       )raw"
@@ -49,6 +50,14 @@ MacroDesc macro_descs[] = {
         int GetSpecNumAndIncrement[<Name>]();
       )raw"
   } ,
+  {
+    "TEST_NESTING",
+    {
+      "[<Param>]"
+    },
+    R"raw(
+          ThereIsATest[<Param>]())raw"
+  },
   {
     "DEFINE_GENERALIZATION_METHOD",
     {
@@ -143,6 +152,32 @@ std::string replace_placeholders_in_macro(const MacroDesc&  macro, const VectorS
 }
 
 
+std::string preprocess(const std::string& str, bool& was_changed)
+{
+  IndexedMacrocesType macroces;
+  fill_macro_idxs(macro_descs, macroces, str);
+
+  std::string result;
+  size_t prev_idx = 0;
+
+  for (auto& idxs : macroces) {
+    auto cur_macro_idx = idxs.second;
+    auto cur_pos = idxs.first;
+    result += str.substr(prev_idx, cur_pos - prev_idx);
+
+    auto& replacer = macro_descs[cur_macro_idx];
+    prev_idx = cur_pos + replacer.name.size();
+    auto arguments = get_arguments(str, prev_idx);
+    auto replace_text = replace_placeholders_in_macro(replacer, arguments);
+
+    result += replace_text;
+  }
+  result += str.substr(prev_idx);
+  was_changed = !macroces.empty();
+  return result;
+}
+
+
 int main(int argc, char * argv[])
 {
   //ifstream ifst(argv[1]);
@@ -162,26 +197,13 @@ int main(int argc, char * argv[])
   std::string str((std::istreambuf_iterator<char>(ifstr)),
                    std::istreambuf_iterator<char>());
 
-  IndexedMacrocesType macroces;
+  bool was_changed = false;
+  std::string result = preprocess(str, was_changed);
 
-  fill_macro_idxs(macro_descs, macroces, str);
-
-  std::string result;
-  size_t prev_idx = 0;
-  for (auto& idxs : macroces) 
+  while (was_changed)
   {
-    auto cur_macro_idx = idxs.second;
-    auto cur_pos = idxs.first;
-    result += str.substr(prev_idx, cur_pos - prev_idx);
-
-    auto& replacer = macro_descs[cur_macro_idx];
-    prev_idx = cur_pos + replacer.name.size();
-    auto arguments = get_arguments(str, prev_idx);
-    auto replace_text = replace_placeholders_in_macro(replacer, arguments);
-
-    result += replace_text;
+    result = preprocess(result, was_changed);
   }
-  result += str.substr(prev_idx);
 
   std::cerr << result << std::endl;
 

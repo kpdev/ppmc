@@ -1,3 +1,7 @@
 Begin test
- text CREATE_SPECIALIZATION(NameArg, BNameArg, SNameArg) end test 
+ text
+ 
+ DECLARE_MM(TypeName1, Dimention1, BaseType1, int, float, double)
+ 
+  end test 
  text

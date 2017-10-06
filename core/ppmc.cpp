@@ -7,6 +7,7 @@
 #include <cassert>
 #include <memory>
 
+#define PP_VARARG "[<...>]"
 
 using std::ifstream;
 using VectorStr = std::vector<std::string>;
@@ -19,7 +20,6 @@ struct MacroDesc
 };
 
 using IndexedMacrocesType = std::map<size_t, unsigned>;
-
 
 MacroDesc macro_descs[] = {
   {
@@ -71,6 +71,25 @@ MacroDesc macro_descs[] = {
             return specNumber++; 
         }
       )raw"
+  },
+  {
+    "DECLARE_MM",
+    {
+      "[<TypeName>]",
+      "[<Dimention>]",
+      "[<BaseType>]",
+      PP_VARARG
+    },
+
+    R"raw(
+      typedef void (*[<TypeName>])([<BaseType>]&, [<BaseType>]&, )raw" PP_VARARG R"raw( );
+      extern [<TypeName>] [<TypeName>]##MMArray[][[<Dimention>]];
+      template<typename ...ArgsT>
+      void [<TypeName>]##MM([<BaseType>] &p1, [<BaseType>] &p2, ArgsT ...args)
+      {
+        ([<TypeName>]##MMArray[p1.mark][p2.mark])( p1, p2, args... );
+      }
+    )raw"
   }
 };
 
@@ -93,10 +112,11 @@ void fill_macro_idxs(const MacroDesc(&container)[macroces_count], IndexedMacroce
 }
 
 
-std::string parse_arg(const std::string& str, size_t& idx)
+std::string parse_arg(const std::string& str, size_t& idx, bool is_vararg)
 {
   std::string result;
-  while (str[idx] != ',' && str[idx] != ')') 
+  while ((is_vararg || (!is_vararg && str[idx] != ','))
+    && str[idx] != ')')
   {
     result += str[idx++];
   }
@@ -104,14 +124,15 @@ std::string parse_arg(const std::string& str, size_t& idx)
 }
 
 
-VectorStr get_arguments(const std::string& str, size_t& idx)
+VectorStr get_arguments(const std::string& str, size_t& idx, const VectorStr& arguments_names)
 {
   assert(str[idx] == '(');
   idx++;
   VectorStr result;
   while (str[idx] != ')') 
   {
-    auto cur_arg = parse_arg(str, idx);
+    const auto cur_mmacro_arg = arguments_names[result.size()];
+    auto cur_arg = parse_arg(str, idx, cur_mmacro_arg == PP_VARARG);
     result.emplace_back(std::move(cur_arg));
     if (str[idx] == ',')
       idx++;
@@ -167,7 +188,7 @@ std::string preprocess(const std::string& str, bool& was_changed)
 
     auto& replacer = macro_descs[cur_macro_idx];
     prev_idx = cur_pos + replacer.name.size();
-    auto arguments = get_arguments(str, prev_idx);
+    auto arguments = get_arguments(str, prev_idx, replacer.arguments);
     auto replace_text = replace_placeholders_in_macro(replacer, arguments);
 
     result += replace_text;

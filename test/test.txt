@@ -1,7 +1,7 @@
 Begin test
  text
  
- DECLARE_MM(TypeName1, Dimention1, BaseType1, int, float, double)
+ DECLARE_MM(TypeName1, Dimension1, BaseType1, int, float, double)
  
   end test 
  text

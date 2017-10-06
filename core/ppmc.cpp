@@ -76,14 +76,14 @@ MacroDesc macro_descs[] = {
     "DECLARE_MM",
     {
       "[<TypeName>]",
-      "[<Dimention>]",
+      "[<Dimension>]",
       "[<BaseType>]",
       PP_VARARG
     },
 
     R"raw(
       typedef void (*[<TypeName>])([<BaseType>]&, [<BaseType>]&, )raw" PP_VARARG R"raw( );
-      extern [<TypeName>] [<TypeName>]##MMArray[][[<Dimention>]];
+      extern [<TypeName>] [<TypeName>]##MMArray[][[<Dimension>]];
       template<typename ...ArgsT>
       void [<TypeName>]##MM([<BaseType>] &p1, [<BaseType>] &p2, ArgsT ...args)
       {
@@ -131,7 +131,7 @@ VectorStr get_arguments(const std::string& str, size_t& idx, const VectorStr& ar
   VectorStr result;
   while (str[idx] != ')') 
   {
-    const auto cur_mmacro_arg = arguments_names[result.size()];
+    const auto& cur_mmacro_arg = arguments_names[result.size()];
     auto cur_arg = parse_arg(str, idx, cur_mmacro_arg == PP_VARARG);
     result.emplace_back(std::move(cur_arg));
     if (str[idx] == ',')

@@ -26,15 +26,15 @@ before_install:
 
 script:
   # Link gcc-6 and g++-6 to their standard commands
-  - ln -s /usr/bin/clang-5 /usr/local/bin/clang
-  - ln -s /usr/bin/clang++-5 /usr/local/bin/clang++
+  #- ln -s /usr/bin/clang-5 /usr/local/bin/clang
+  #- ln -s /usr/bin/clang++-5 /usr/local/bin/clang++
   # Export CC and CXX to tell cmake which compiler to use
   - export CC=/usr/bin/clang-6
   - export CXX=/usr/bin/clang++-6
   # Check versions of gcc, g++ and cmake
-  - clang -v && g++ -v && cmake --version
+  - CC -v && g++ -v && cmake --version
   # Run your build commands next
-  - clang++ -std=c++11 core/ppmc.cpp -o a.out
+  - CXX -std=c++11 core/ppmc.cpp -o a.out
   
 
 

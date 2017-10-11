@@ -6,7 +6,7 @@
 #include <vector>
 #include <cassert>
 #include <memory>
-#include <filesystem>
+//#include <filesystem>
 
 #define PP_VARARG "[<...>]"
 
@@ -206,11 +206,9 @@ int main(int argc, char * argv[])
   //  std::cerr << "Wrong filename\n";
   //}
 
-	namespace fs = std::experimental::filesystem::v1;
-
-	fs::path cur_path = fs::current_path();
-
-	std::cerr << cur_path << std::endl;
+	//namespace fs = std::experimental::filesystem::v1;
+	//fs::path cur_path = fs::current_path();
+	//std::cerr << cur_path << std::endl;
 
   const char * path_to_test_file = "test/test.txt";
 

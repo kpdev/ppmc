@@ -6,10 +6,10 @@
 #include <vector>
 #include <cassert>
 #include <memory>
+#include <filesystem>
 
 #define PP_VARARG "[<...>]"
 
-using std::ifstream;
 using VectorStr = std::vector<std::string>;
 
 struct MacroDesc
@@ -102,8 +102,8 @@ void fill_macro_idxs(const MacroDesc(&container)[macroces_count], IndexedMacroce
   {
     auto cur_id = &m - &container[0];
     auto& cur_name = m.name;
-    size_t nPos = str.find(cur_name, 0);
-    while (nPos != std::string::npos) 
+		size_t nPos = str.find(cur_name, 0);
+    while (nPos != std::string::npos)
     {
       macroces[nPos] = cur_id;
       nPos = str.find(cur_name, nPos + 1);
@@ -205,6 +205,12 @@ int main(int argc, char * argv[])
   //if (!ifst.open) {
   //  std::cerr << "Wrong filename\n";
   //}
+
+	namespace fs = std::experimental::filesystem::v1;
+
+	fs::path cur_path = fs::current_path();
+
+	std::cerr << cur_path << std::endl;
 
   const char * path_to_test_file = "test/test.txt";
 

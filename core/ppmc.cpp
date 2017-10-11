@@ -7,6 +7,7 @@
 #include <cassert>
 #include <memory>
 
+/*
 #ifdef __has_include                           // Check if __has_include is present
 #  if __has_include(<filesystem>)                // Check for a standard library
 #    include<filesystem>
@@ -18,6 +19,7 @@
 #elif
 #  error("No has_inculde")
 #endif
+*/
 
 //#include <filesystem>
 

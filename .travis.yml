@@ -34,7 +34,7 @@ script:
   # Check versions of gcc, g++ and cmake
   - $CC -v && g++ -v && cmake --version
   # Run your build commands next
-  - $CXX -std=c++17 core/ppmc.cpp -o a.out
+  - $CXX -std=c++11 core/ppmc.cpp -o a.out
   
 
 

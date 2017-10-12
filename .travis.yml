@@ -36,6 +36,8 @@ script:
   #- export CXX=/usr/bin/clang++-6
   # Check versions of gcc, g++ and cmake
   - $CC -v && $CXX -v && cmake --version
+  - $CXX core/ppmc.cpp -o ppmc.out -std=c++17 -lstdc++fs
+  - ./ppmc.out
   # Run your build commands next
   #- $CXX -std=c++17 -stdlib=libc++ -lc++experimental -lpthread core/ppmc.cpp -o a.out
   

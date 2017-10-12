@@ -35,7 +35,7 @@ branches:
   - master
 
 before_install:
-    - eval "CC=gcc-6.0 && CXX=g++-6.0"
+    - eval "CC=gcc-6 && CXX=g++-6"
 
 script:
   # Link gcc-6 and g++-6 to their standard commands

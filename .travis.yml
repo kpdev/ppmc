@@ -14,9 +14,9 @@ matrix:
           sources:
             - llvm-toolchain-trusty-5.0
           packages:
-            - clang-5.0
+            - gcc-6.0
       env:
-        - MATRIX_EVAL="CC=clang-5.0 && CXX=clang++-5.0"
+        - MATRIX_EVAL="CC=gcc-6.0 && CXX=g++-6.0"
 branches:
   only:
   - master
@@ -34,7 +34,7 @@ script:
   # Check versions of gcc, g++ and cmake
   - $CC -v && $CXX -v && cmake --version
   # Run your build commands next
-  - $CXX -std=c++17 -stdlib=libc++ -lc++experimental -lpthread core/ppmc.cpp -o a.out
+  #- $CXX -std=c++17 -stdlib=libc++ -lc++experimental -lpthread core/ppmc.cpp -o a.out
   
 
 

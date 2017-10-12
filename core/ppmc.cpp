@@ -7,7 +7,6 @@
 #include <cassert>
 #include <memory>
 
-/*
 #ifdef __has_include                           // Check if __has_include is present
 #  if __has_include(<filesystem>)                // Check for a standard library
 #    include<filesystem>
@@ -19,9 +18,6 @@
 #elif
 #  error("No has_inculde")
 #endif
-*/
-
-//#include <filesystem>
 
 #define PP_VARARG "[<...>]"
 
@@ -221,9 +217,9 @@ int main(int argc, char * argv[])
   //  std::cerr << "Wrong filename\n";
   //}
 
-	//namespace fs = std::experimental::filesystem::v1;
-	//fs::path cur_path = fs::current_path();
-	//std::cerr << cur_path << std::endl;
+  namespace fs = std::experimental::filesystem::v1;
+  fs::path cur_path = fs::current_path();
+  std::cerr << "PATH [" << cur_path << "] PATH" << std::endl;
 
   const char * path_to_test_file = "test/test.txt";
 

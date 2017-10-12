@@ -34,7 +34,7 @@ script:
   # Check versions of gcc, g++ and cmake
   - $CC -v && $CXX -v && cmake --version
   # Run your build commands next
-  - $CXX -std=c++17 -lstdc++fs -lpthread core/ppmc.cpp -o a.out
+  - $CXX -std=c++17 -stdlib=libc++ -lc++experimental -lpthread core/ppmc.cpp -o a.out
   
 
 

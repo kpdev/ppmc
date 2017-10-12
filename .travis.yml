@@ -17,6 +17,8 @@ before_install:
     sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 60 --slave /usr/bin/g++ g++ /usr/bin/g++-6 && \
     sudo apt-get install gcc-4.8 g++-4.8 -y && \
     sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 60 --slave /usr/bin/g++ g++ /usr/bin/g++-4.8;
+  - gcc-6 --version
+  - eval "CC=gcc-6 && CXX=g++-6"
 
 #matrix:
 #  include:
@@ -33,9 +35,6 @@ before_install:
 branches:
   only:
   - master
-
-before_install:
-    - eval "CC=gcc-6 && CXX=g++-6"
 
 script:
   # Link gcc-6 and g++-6 to their standard commands

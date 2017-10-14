@@ -257,26 +257,27 @@ int main(int argc, char * argv[])
   //  std::cerr << "Wrong filename\n";
   //}
 
-	const fs::path cur_dir = fs::current_path();
-	const fs::path work_path = cur_dir / "test"; // TODO: Directory name as program argument
+  const fs::path cur_dir = fs::current_path();
+  const fs::path work_path = cur_dir / "test"; // TODO: Directory name as program argument
 
-	test_output_file.clear();
+  test_output_file.clear();
 
-	for (auto & p : fs::recursive_directory_iterator(work_path))
-	{
-		if (fs::is_regular_file(p))
-		{
-			test_output_file << "\nStart to process file: " << p << "\n";
-			process_file(p) ?
-				test_output_file << "\n[SUCCESS]\n" :
-				test_output_file << "\n[FAIL]\n";
-		}
-	}
+  for (auto & p : fs::recursive_directory_iterator(work_path))
+  {
+    if (fs::is_regular_file(p))
+    {
+      test_output_file << "\nStart to process file: " << p << "\n";
+      process_file(p) ?
+        test_output_file << "\n[SUCCESS]\n" :
+        test_output_file << "\n[FAIL]\n";
+    }
+  }
 
-	test_output_file.flush();
-	auto resulted_str = get_str_from_file(std::ifstream(test_output_file_path));
+  test_output_file.flush();
+  auto file_to_read = std::ifstream(test_output_file_path);
+  auto resulted_str = get_str_from_file(file_to_read);
 
-	std::cerr << resulted_str << "\n";
+  std::cerr << resulted_str << "\n";
 
   return EXIT_SUCCESS;
 }

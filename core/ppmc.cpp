@@ -10,7 +10,9 @@
 
 #define PP_VARARG "[<...>]"
 
+namespace fs = std::experimental::filesystem::v1;
 using VectorStr = std::vector<std::string>;
+using IndexedMacrocesType = std::map<size_t, unsigned>;
 
 struct MacroDesc
 {
@@ -19,7 +21,6 @@ struct MacroDesc
   std::string value;
 };
 
-using IndexedMacrocesType = std::map<size_t, unsigned>;
 
 MacroDesc macro_descs[] = {
   {
@@ -199,6 +200,45 @@ std::string preprocess(const std::string& str, bool& was_changed)
 }
 
 
+// Just for debug purpose
+// TODO: Remove
+const auto test_output_file_path("test_out.txt");
+std::ofstream test_output_file(test_output_file_path);
+
+
+std::string get_str_from_file(std::ifstream& file)
+{
+	std::string str((std::istreambuf_iterator<char>(file)),
+									 std::istreambuf_iterator<char>());
+	return str;
+}
+
+
+bool process_file(const fs::path& path)
+{
+	std::ifstream ifstr(path.c_str());
+
+	if (!ifstr.is_open()) {
+		std::cerr << "Cannot open the file\n";
+		return false;
+	}
+
+	std::string str = get_str_from_file(ifstr);
+
+	bool was_changed = false;
+	std::string result = preprocess(str, was_changed);
+
+	while (was_changed)
+	{
+		result = preprocess(result, was_changed);
+	}
+
+	test_output_file << result;
+
+	return true;
+}
+
+
 int main(int argc, char * argv[])
 {
   //ifstream ifst(argv[1]);
@@ -206,33 +246,26 @@ int main(int argc, char * argv[])
   //  std::cerr << "Wrong filename\n";
   //}
 
-	namespace fs = std::experimental::filesystem::v1;
+	const fs::path cur_dir = fs::current_path();
+	const fs::path work_path = cur_dir / "test"; // TODO: Directory name as program argument
 
-	fs::path cur_path = fs::current_path();
+	test_output_file.clear();
 
-	std::cerr << cur_path << std::endl;
+	for (auto & p : fs::recursive_directory_iterator(work_path))
+	{
+		if (fs::is_regular_file(p))
+		{
+			test_output_file << "\nStart to process file: " << p << "\n";
+			process_file(p) ?
+				test_output_file << "\n[SUCCESS]\n" :
+				test_output_file << "\n[FAIL]\n";
+		}
+	}
 
-  const char * path_to_test_file = "test/test.txt";
+	test_output_file.flush();
+	auto resulted_str = get_str_from_file(std::ifstream(test_output_file_path));
 
-  std::ifstream ifstr(path_to_test_file);
-
-  if (!ifstr.is_open())     {
-    std::cerr << "Cannot open the file\n";
-    return EXIT_FAILURE;
-  }
-
-  std::string str((std::istreambuf_iterator<char>(ifstr)),
-                   std::istreambuf_iterator<char>());
-
-  bool was_changed = false;
-  std::string result = preprocess(str, was_changed);
-
-  while (was_changed)
-  {
-    result = preprocess(result, was_changed);
-  }
-
-  std::cerr << result << std::endl;
+	std::cerr << resulted_str << "\n";
 
   return EXIT_SUCCESS;
 }

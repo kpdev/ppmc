@@ -1,0 +1,7 @@
+Begin test
+ text
+ 
+ CREATE_SPECIALIZATION(Name1, SpecName1, BaseName1)
+ 
+  end test 
+ text

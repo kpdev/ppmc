@@ -6,7 +6,18 @@
 #include <vector>
 #include <cassert>
 #include <memory>
-#include <filesystem>
+
+#ifdef __has_include                           // Check if __has_include is present
+#  if __has_include(<filesystem>)                // Check for a standard library
+#    include<filesystem>
+#  elif __has_include(<experimental/filesystem>) // Check for an experimental version
+#    include <experimental/filesystem>
+#  else                                        // Not found at all
+#     error "Missing <filesystem>"
+#  endif
+#elif
+#  error("No has_inculde")
+#endif
 
 #define PP_VARARG "[<...>]"
 

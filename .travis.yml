@@ -6,40 +6,15 @@ compiler:
   - gcc
 
 before_install:
-  # C++14
   - sudo apt-get update && sudo apt-get install build-essential software-properties-common -y && sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y && sudo apt-get update && sudo apt-get install gcc-snapshot -y && sudo apt-get update && sudo apt-get install gcc-6 g++-6 -y && sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 60 --slave /usr/bin/g++ g++ /usr/bin/g++-6 && sudo apt-get install gcc-4.8 g++-4.8 -y && sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 60 --slave /usr/bin/g++ g++ /usr/bin/g++-4.8
   - gcc-6 --version
   - eval "CC=gcc-6 && CXX=g++-6"
 
-#matrix:
-#  include:
-#    # works on Trusty
-#    - os: linux
-#      addons:
-#        apt:
-#          sources:
-#            - llvm-toolchain-trusty-5.0
-#          packages:
-#            - gcc-6.0
-#      env:
-#        - MATRIX_EVAL="CC=gcc-6.0 && CXX=g++-6.0"
 branches:
   only:
   - master
 
 script:
-  # Link gcc-6 and g++-6 to their standard commands
-  #- ln -s /usr/bin/clang-5 /usr/local/bin/clang
-  #- ln -s /usr/bin/clang++-5 /usr/local/bin/clang++
-  # Export CC and CXX to tell cmake which compiler to use
-  #- export CC=/usr/bin/clang-6
-  #- export CXX=/usr/bin/clang++-6
-  # Check versions of gcc, g++ and cmake
   - $CC -v && $CXX -v && cmake --version
   - $CXX core/ppmc.cpp -o ppmc.out -std=c++17 -lstdc++fs
   - ./ppmc.out
-  # Run your build commands next
-  #- $CXX -std=c++17 -stdlib=libc++ -lc++experimental -lpthread core/ppmc.cpp -o a.out
-  
-
-

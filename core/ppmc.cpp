@@ -1,111 +1,27 @@
 
+#include "../macro_description/macro_description.hpp"
+
 #include <iostream>
 #include <fstream>
-#include <string>
 #include <map>
-#include <vector>
 #include <cassert>
 #include <memory>
 
-#ifdef __has_include                           // Check if __has_include is present
+#ifdef __has_include                             // Check if __has_include is present
 #  if __has_include(<filesystem>)                // Check for a standard library
 #    include<filesystem>
 #  elif __has_include(<experimental/filesystem>) // Check for an experimental version
 #    include <experimental/filesystem>
-#  else                                        // Not found at all
+#  else                                          // Not found at all
 #     error "Missing <filesystem>"
 #  endif
 #elif
 #  error("No has_inculde")
 #endif
 
-#define PP_VARARG "[<...>]"
 
 namespace fs = std::experimental::filesystem::v1;
-using VectorStr = std::vector<std::string>;
 using IndexedMacrocesType = std::map<size_t, unsigned>;
-
-struct MacroDesc
-{
-  std::string name;
-  VectorStr arguments;
-  std::string value;
-};
-
-
-MacroDesc macro_descs[] = {
-  {
-    "CREATE_SPECIALIZATION",
-    {
-      "[<Name>]",
-      "[<BaseName>]",
-      "[<SpecName>]"
-    },
-  R"raw(
-        struct [<Name>] : [<BaseName>] {
-            using base_type = [<BaseName>];
-            [<SpecName>] _spec;
-            TEST_NESTING([<Name>]);
-        };
-        int GetRegMark[<Name>]();
-      )raw"
-  },
-  {
-    "CREATE_GENERALIZATION",
-    {
-      "[<Name>]"
-    },
-  R"raw(
-        struct [<Name>] { 
-            int mark; 
-        }; 
-        int GetSpecNumAndIncrement[<Name>]();
-      )raw"
-  } ,
-  {
-    "TEST_NESTING",
-    {
-      "[<Param>]"
-    },
-    R"raw(
-          ThereIsATest[<Param>]())raw"
-  },
-  {
-    "DEFINE_GENERALIZATION_METHOD",
-    {
-      "[<Name>]"
-    },
-  R"raw(
-        namespace { 
-            int specNumber = 0; 
-        } 
-        int GetSpecNumAndIncrement[<Name>]() { 
-            return specNumber++; 
-        }
-      )raw"
-  },
-  {
-    "DECLARE_MM",
-    {
-      "[<TypeName>]",
-      "[<Dimension>]",
-      "[<BaseType>]",
-      PP_VARARG
-    },
-
-    R"raw(
-      typedef void (*[<TypeName>])([<BaseType>]&, [<BaseType>]&, )raw" PP_VARARG R"raw( );
-      extern [<TypeName>] [<TypeName>]##MMArray[][[<Dimension>]];
-      template<typename ...ArgsT>
-      void [<TypeName>]##MM([<BaseType>] &p1, [<BaseType>] &p2, ArgsT ...args)
-      {
-        ([<TypeName>]##MMArray[p1.mark][p2.mark])( p1, p2, args... );
-      }
-    )raw"
-  }
-};
-
-constexpr size_t macroces_count = sizeof(macro_descs) / sizeof(macro_descs[0]);
 
 
 void fill_macro_idxs(const MacroDesc(&container)[macroces_count], IndexedMacrocesType& macroces, const std::string& str)
@@ -219,34 +135,34 @@ std::ofstream test_output_file(test_output_file_path);
 
 std::string get_str_from_file(std::ifstream& file)
 {
-	std::string str((std::istreambuf_iterator<char>(file)),
-									 std::istreambuf_iterator<char>());
-	return str;
+  std::string str((std::istreambuf_iterator<char>(file)),
+                   std::istreambuf_iterator<char>());
+  return str;
 }
 
 
 bool process_file(const fs::path& path)
 {
-	std::ifstream ifstr(path.c_str());
+  std::ifstream ifstr(path.c_str());
 
-	if (!ifstr.is_open()) {
-		std::cerr << "Cannot open the file\n";
-		return false;
-	}
+  if (!ifstr.is_open()) {
+    std::cerr << "Cannot open the file\n";
+    return false;
+  }
 
-	std::string str = get_str_from_file(ifstr);
+  std::string str = get_str_from_file(ifstr);
 
-	bool was_changed = false;
-	std::string result = preprocess(str, was_changed);
+  bool was_changed = false;
+  std::string result = preprocess(str, was_changed);
 
-	while (was_changed)
-	{
-		result = preprocess(result, was_changed);
-	}
+  while (was_changed)
+  {
+    result = preprocess(result, was_changed);
+  }
 
-	test_output_file << result;
+  test_output_file << result;
 
-	return true;
+  return true;
 }
 
 

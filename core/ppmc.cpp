@@ -91,6 +91,7 @@ std::string replace_placeholders_in_macro(const MacroDesc&  macro, const VectorS
     auto cur_pos = idxs.first;
     result += str.substr(prev_idx, cur_pos - prev_idx);
 
+    assert(cur_macro_idx < arguments.size());
     auto& replacer = arguments[cur_macro_idx];
     prev_idx = cur_pos + macro.arguments[cur_macro_idx].size();
     result += replacer;

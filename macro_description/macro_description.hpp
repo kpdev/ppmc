@@ -53,35 +53,65 @@ public:
 
 // TODO: Move this definition to cpp file
 MacroDesc macro_descs[] = {
+  //{
+  //  "INIT",
+  //  {
+  //    "[<TypeName>]",
+  //    "[<SpecName>]",
+  //    PP_VARARG
+  //  },
+  //  R"raw(
+  //    void Init([<TypeName>]& generalizationName, ...) 
+  //    {
+  //      generalizationName.mark = GetRegMark[<TypeName>]();
+  //      [<SpecName>]& c = generalizationName._spec;
+  //      Init(c, PP_VARARGS_STR );
+  //    }
+  //  )raw"
+  //},
   {
-    "INIT",
-    {
-      "[<TypeName>]",
-      "[<SpecName>]",
-      PP_VARARG
-    },
-    R"raw(
-      void Init([<TypeName>]& generalizationName, ...) 
-      {
-        generalizationName.mark = GetRegMark[<TypeName>]();
-        [<SpecName>]& c = generalizationName._spec;
-        Init(c, PP_VARARGS_STR );
-      }
-    )raw"
-  },
-  {
-    "CREATE",
+    "INIT_v2",
     {
       "[<TypeName>]"
     },
     R"raw(
-      [<TypeName>]* Create[<TypeName>]() {
-        [<TypeName>]* object = new [<TypeName>];
-        Init(*object, 0);
-        return object;
+        template <typename [<TypeName>], typename ... TArgs>
+        void Init([<TypeName>]& generalizationName, TArgs ... args)
+        {
+          generalizationName.mark = GetRegMark[<TypeName>]();
+          auto& c = generalizationName._spec;
+          Init(c, args...);
+        }
+      )raw"
+  },
+  //{
+  //  "CREATE",
+  //  {
+  //    "[<TypeName>]"
+  //  },
+  //  R"raw(
+  //    [<TypeName>]* Create[<TypeName>]() {
+  //      [<TypeName>]* object = new [<TypeName>];
+  //      Init(*object, 0);
+  //      return object;
+  //    }
+  //  )raw"
+  //},
+  {
+    "CREATEANDINIT",
+    {
+      "[<TypeName>]",
+      PP_VARARG
+    },
+  R"raw(
+      [<TypeName>]* Create[<TypeName>]AndInit(...) {
+          [<TypeName>]* object = Create[<TypeName>]();
+          Init(*object, )raw" PP_VARARG R"raw( );
+          return object;
       }
     )raw"
   },
+
   {
     "CREATE_SPECIALIZATION",
     {
@@ -286,18 +316,18 @@ MacroDesc macro_descs[] = {
       GetRegMark[<Type>]()
     )raw"
   },
-  {
-    "REGISTER_METHOD",
-    {
-      "[<Container>]",
-      "[<Method>]",
-      "[<Mark>]",
-      "[<DebugInfo>]"
-    },
-    R"raw(
-      MethodRegistrar regMethod[<Method>]([<Container>], [<Method>], [<Mark>], [<DebugInfo>]);
-    )raw"
-  },
+  //{
+  //  "REGISTER_METHOD",
+  //  {
+  //    "[<Container>]",
+  //    "[<Method>]",
+  //    "[<Mark>]",
+  //    "[<DebugInfo>]"
+  //  },
+  //  R"raw(
+  //    MethodRegistrar regMethod[<Method>]([<Container>], [<Method>], [<Mark>], [<DebugInfo>]);
+  //  )raw"
+  //},
   {
     "REGISTER_METHOD_WITH_CHECK_RET_PTR",
     {
@@ -322,7 +352,7 @@ MacroDesc macro_descs[] = {
     )raw"
   },
   {
-    "REGISTER_METHOD_WITH_CHECK",
+    "PP_REGISTER_METHOD_WITH_CHECK",
     {
       "[<Container>]",
       "[<Method>]",

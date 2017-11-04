@@ -171,7 +171,7 @@ int main(int argc, char * argv[])
   const fs::path cur_dir = fs::current_path();
   const fs::path work_path = cur_dir / "test"; // TODO: Directory name as program argument
   const fs::path output_path = cur_dir / "output";
-  fs::create_directory(output_path);
+  fs::create_directories(output_path / "_build" / "obj");
 
   // Just for debug purpose
   // TODO: Remove

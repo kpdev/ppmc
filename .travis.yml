@@ -19,3 +19,6 @@ script:
   - $CXX core/ppmc.cpp -o ppmc.out -std=c++17 -lstdc++fs
   - ./ppmc.out
   - ls
+  - cd output
+  - make
+  - ./labwork08

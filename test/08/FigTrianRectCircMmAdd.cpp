@@ -85,7 +85,7 @@ REG_MM_SPEC(MmRectCircSpecOut, FigRectangle, FigCircle);
 REG_MM_SPEC(MmCircTrianSpecOut, FigCircle, FigTriangle);
 REG_MM_SPEC(MmCircRectSpecOut, FigCircle, FigRectangle);
 REG_MM_SPEC(MmCircCircSpecOut, FigCircle, FigCircle);
-END_REG_MM("Registration of: Extended combinations of Triangle, Rectangle, Circle in  Multimethod");
+END_REG_MM("Registration of: Extended combinations of Triangle; Rectangle; Circle in  Multimethod"); // TODO: ADD ',' SUPPORT
 
 
 

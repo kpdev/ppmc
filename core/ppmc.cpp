@@ -128,12 +128,6 @@ std::string preprocess(const std::string& str, bool& was_changed)
 }
 
 
-// Just for debug purpose
-// TODO: Remove
-const auto test_output_file_path("test_out.txt");
-std::ofstream test_output_file(test_output_file_path);
-
-
 std::string get_str_from_file(std::ifstream& file)
 {
   std::string str((std::istreambuf_iterator<char>(file)),
@@ -142,7 +136,7 @@ std::string get_str_from_file(std::ifstream& file)
 }
 
 
-bool process_file(const fs::path& path)
+bool process_file(const fs::path& path, std::ofstream& output_file)
 {
   std::ifstream ifstr(path.c_str());
 
@@ -161,7 +155,7 @@ bool process_file(const fs::path& path)
     result = preprocess(result, was_changed);
   }
 
-  test_output_file << result;
+  output_file << result;
 
   return true;
 }
@@ -176,7 +170,13 @@ int main(int argc, char * argv[])
 
   const fs::path cur_dir = fs::current_path();
   const fs::path work_path = cur_dir / "test"; // TODO: Directory name as program argument
+  const fs::path output_path = cur_dir / "output";
+  fs::create_directory(output_path);
 
+  // Just for debug purpose
+  // TODO: Remove
+  const auto test_output_file_path("test_out.txt");
+  std::ofstream test_output_file(test_output_file_path);
   test_output_file.clear();
 
   for (auto & p : fs::recursive_directory_iterator(work_path))
@@ -184,7 +184,15 @@ int main(int argc, char * argv[])
     if (fs::is_regular_file(p))
     {
       test_output_file << "\nStart to process file: " << p << "\n";
-      process_file(p) ?
+
+      auto& p_path = p.path();
+      const fs::path textFilename = p_path.filename();
+      auto out_file_path = output_path / textFilename;
+
+      std::ofstream cur_output_file(out_file_path.c_str());
+      assert(cur_output_file.is_open());
+
+      process_file(p, cur_output_file) ?
         test_output_file << "\n[SUCCESS]\n" :
         test_output_file << "\n[FAIL]\n";
     }

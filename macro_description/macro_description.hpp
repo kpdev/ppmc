@@ -123,7 +123,6 @@ MacroDesc macro_descs[] = {
         struct [<Name>] : [<BaseName>] {
             using base_type = [<BaseName>];
             [<SpecName>] _spec;
-            TEST_NESTING([<Name>]);
         };
         int GetRegMark[<Name>]();
       )raw"

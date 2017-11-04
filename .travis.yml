@@ -21,3 +21,4 @@ script:
   - ls
   - cd output
   - make
+  - ./labwork08

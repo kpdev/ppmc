@@ -16,5 +16,6 @@ branches:
 
 script:
   - $CC -v && $CXX -v && cmake --version
+  - ls
   - $CXX core/ppmc.cpp -o ppmc.out -std=c++17 -lstdc++fs
   - ./ppmc.out

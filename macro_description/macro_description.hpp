@@ -396,8 +396,8 @@ MacroDesc macro_descs[] = {
 		      }
 		      return nullptr;
 	      }
-	      PP_REGISTER_METHOD([<Container>]FuncArray, __Inner_Check_[<Method>], GetRegMark[<DerivedClass>](), [<DebugInfo>]);
-      }        
+      }  
+      PP_REGISTER_METHOD([<Container>]FuncArray, __Inner_Check_[<Method>], GetRegMark[<DerivedClass>](), [<DebugInfo>]);      
     )raw"
   },
   {

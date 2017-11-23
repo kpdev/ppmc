@@ -356,6 +356,24 @@ MacroDesc macro_descs[] = {
       "[<DebugInfo>]"
     },
     R"raw(
+      class MethodRegistrar
+      {
+      public:
+        template<typename TMethod>
+        MethodRegistrar(
+          TMethod container[],
+          TMethod method,
+          int index,
+          const char* info = nullptr)
+        {
+          if (info != nullptr) {
+            std::cout << info << "\n\tindex: " << index << '\n';
+          }
+
+          container[index] = method;
+        }
+      };
+
       MethodRegistrar regMethod[<Method>]([<Container>], [<Method>], [<Mark>], [<DebugInfo>]);
     )raw"
   },
@@ -418,6 +436,18 @@ MacroDesc macro_descs[] = {
       "[<DebugInfo>]"
     },
     R"raw(
+      class ClassMarkRegistrar
+      {
+      public:
+        typedef void(*Initializer)();
+
+        explicit ClassMarkRegistrar(Initializer init, const char* regInfo = nullptr)
+        {
+          if (regInfo != nullptr) std::cout << regInfo << std::endl;
+          init();
+        }
+      };
+
       namespace
       {
           void InitRegMark[<SpecName>]()

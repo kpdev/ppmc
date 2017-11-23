@@ -55,7 +55,7 @@ void DeleteFigRectangle(FigRectangle& pfr) {
 //=============================================================================
 
 REGISTER_METHOD_WITH_CHECK_RET_PTR(CreateFigureUseFileMark, CreateFigRectangle, FigRectangle, "Registration of CreateFigRectangleUseFileMark", 1, Figure);
-REGISTER_METHOD_WITH_CHECK(InFigureValue, In, "Registration of InFigRectangleValue", FigRectangle, ifstream&);
-REGISTER_METHOD_WITH_CHECK(OutFigure, Out, "Registration of OutFigRectangle", FigRectangle, ofstream&);
-REGISTER_METHOD_WITH_CHECK(DeleteFigure, DeleteFigRectangle,"Registration of DeleteFigRectangle", FigRectangle);
+PP_REGISTER_METHOD_WITH_CHECK(InFigureValue, In, "Registration of InFigRectangleValue", FigRectangle, ifstream&);
+PP_REGISTER_METHOD_WITH_CHECK(OutFigure, Out, "Registration of OutFigRectangle", FigRectangle, ofstream&);
+PP_REGISTER_METHOD_WITH_CHECK(DeleteFigure, DeleteFigRectangle,"Registration of DeleteFigRectangle", FigRectangle, void);
 

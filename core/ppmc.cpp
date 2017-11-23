@@ -43,10 +43,17 @@ void fill_macro_idxs(const MacroDesc(&container)[macroces_count], IndexedMacroce
 std::string parse_arg(const std::string& str, size_t& idx, bool is_vararg)
 {
   std::string result;
+  unsigned parenteses_level = 0;
   while ((is_vararg || (!is_vararg && str[idx] != ','))
-    && str[idx] != ')')
+    && (str[idx] != ')' || parenteses_level > 0))
   {
-    result += str[idx++];
+    if (str[idx] == '(')
+      ++parenteses_level;
+    else if (str[idx] == ')' && parenteses_level != 0)
+      --parenteses_level;
+    const char cur_char = str[idx++];
+    if (cur_char != ' ')
+      result += cur_char;
   }
   return result;
 }
@@ -57,6 +64,7 @@ VectorStr get_arguments(const std::string& str, size_t& idx, const VectorStr& ar
   assert(str[idx] == '(');
   idx++;
   VectorStr result;
+  unsigned nested_braces_level{ 0 };
   while (str[idx] != ')') 
   {
     const auto& cur_mmacro_arg = arguments_names[result.size()];
@@ -153,7 +161,11 @@ bool process_file(const fs::path& path, std::ofstream& output_file)
   while (was_changed)
   {
     result = preprocess(result, was_changed);
+    std::cerr << result << "\n\n\n\n";
   }
+
+
+  
 
   output_file << result;
 
@@ -178,6 +190,8 @@ int main(int argc, char * argv[])
   const auto test_output_file_path("test_out.txt");
   std::ofstream test_output_file(test_output_file_path);
   test_output_file.clear();
+
+  int debug = 0;
 
   for (auto & p : fs::recursive_directory_iterator(work_path))
   {

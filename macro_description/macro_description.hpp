@@ -53,22 +53,6 @@ public:
 
 // TODO: Move this definition to cpp file
 MacroDesc macro_descs[] = {
-  //{
-  //  "INIT",
-  //  {
-  //    "[<TypeName>]",
-  //    "[<SpecName>]",
-  //    PP_VARARG
-  //  },
-  //  R"raw(
-  //    void Init([<TypeName>]& generalizationName, ...) 
-  //    {
-  //      generalizationName.mark = GetRegMark[<TypeName>]();
-  //      [<SpecName>]& c = generalizationName._spec;
-  //      Init(c, PP_VARARGS_STR );
-  //    }
-  //  )raw"
-  //},
   {
     "INIT_v2",
     {
@@ -84,19 +68,67 @@ MacroDesc macro_descs[] = {
         }
       )raw"
   },
-  //{
-  //  "CREATE",
-  //  {
-  //    "[<TypeName>]"
-  //  },
-  //  R"raw(
-  //    [<TypeName>]* Create[<TypeName>]() {
-  //      [<TypeName>]* object = new [<TypeName>];
-  //      Init(*object, 0);
-  //      return object;
-  //    }
-  //  )raw"
-  //},
+  {
+    "v1_CREATE",
+    {
+      "[<TypeName>]"
+    },
+    R"raw(
+      [<TypeName>]* Create[<TypeName>]() { 
+          [<TypeName>]* object = new [<TypeName>]; 
+          Init(*object, 0); 
+          return object; 
+      } 
+    )raw"
+  },
+  {
+    "v1_IN",
+    {
+      "[<TypeName>]",
+      "[<SpecName>]"
+    },
+    R"raw(
+      void In([<TypeName>]& generalizationName, ifstream &ifst) {
+          [<SpecName>]& c = generalizationName._spec;
+          In(ifst, c);
+      }
+    )raw"
+  },
+  {
+    "OUT",
+    {
+      "[<TypeName>]",
+      "[<SpecName>]"
+    },
+  R"raw(
+    void Out([<TypeName>]& generalizationName, ofstream &ifst) { 
+        [<SpecName>]& c = generalizationName._spec; 
+        Out(ifst, c); 
+    )raw"
+  },
+  {
+    "DELETE",
+    {
+      "[<TypeName>]"
+    },
+  R"raw(
+      void Delete[<TypeName>]([<TypeName>]& object) { \
+          delete &object; \
+    )raw"
+  },
+  {
+    "FUNC_TES",
+    {
+      "[<FuncName>]",
+      "[<RetType>]",
+      "[<BaseType>]",
+      PP_VARARG
+    },
+    R"raw(
+      [<RetType>] [<FuncName>]([<BaseType>]&, )raw" PP_VARARG R"raw( );
+    )raw"
+  },
+
   {
     "CREATEANDINIT",
     {
@@ -226,7 +258,7 @@ MacroDesc macro_descs[] = {
       template<typename ... ArgsT>
       void [<MethodName>](BaseType &f1, BaseType &f2, ArgsT ...args)
       {
-	      if(f1.mark == GET_REG_MARK_METHOD( [<Type1>] ) && f2.mark == GET_REG_MARK_METHOD( [<Type2>] )) {
+	      if(f1.mark == GetRegMark[<Type1>]() && f2.mark == GetRegMark[<Type2>]() ) {
 		      [<MethodImpl>](static_cast< [<Type1>]& >(f1), static_cast< [<Type2>]&>(f2), args...);
 	      }
 	      else {
@@ -258,8 +290,8 @@ MacroDesc macro_descs[] = {
       "[<Type2>]"
     },
     R"raw(
-			_array_alias[GET_REG_MARK_METHOD(Type1)][GET_REG_MARK_METHOD(Type2)] = [<SpecName>];
-			cout << "    multimethodFunc[" << GET_REG_MARK_METHOD( [<Type1>] ) << "][" << GET_REG_MARK_METHOD( [<Type2>] ) << "] = " [<SpecName>] << endl;
+			_array_alias[GetRegMark[<Type1>]()][GetRegMark[<Type2>]()] = [<SpecName>];
+			cout << "    multimethodFunc[" << GetRegMark[<Type1>]() << "][" << GetRegMark[<Type2>]() << "] = " [<SpecName>] << endl;
     )raw"
   },
   {
@@ -309,24 +341,24 @@ MacroDesc macro_descs[] = {
   {
     "GET_REG_MARK_METHOD",
     {
-      "[Type<>]"
+      "[<Type>]"
     },
     R"raw(
       GetRegMark[<Type>]()
     )raw"
   },
-  //{
-  //  "REGISTER_METHOD",
-  //  {
-  //    "[<Container>]",
-  //    "[<Method>]",
-  //    "[<Mark>]",
-  //    "[<DebugInfo>]"
-  //  },
-  //  R"raw(
-  //    MethodRegistrar regMethod[<Method>]([<Container>], [<Method>], [<Mark>], [<DebugInfo>]);
-  //  )raw"
-  //},
+  {
+    "PP_REGISTER_METHOD",
+    {
+      "[<Container>]",
+      "[<Method>]",
+      "[<Mark>]",
+      "[<DebugInfo>]"
+    },
+    R"raw(
+      MethodRegistrar regMethod[<Method>]([<Container>], [<Method>], [<Mark>], [<DebugInfo>]);
+    )raw"
+  },
   {
     "REGISTER_METHOD_WITH_CHECK_RET_PTR",
     {
@@ -346,7 +378,7 @@ MacroDesc macro_descs[] = {
 		      }
 		      return nullptr;
 	      }
-	      REGISTER_METHOD([<Container>]FuncArray, __Inner_Check_[<Method>], GET_REG_MARK_METHOD([<DerivedClass>]), [<DebugInfo>]);
+	      PP_REGISTER_METHOD([<Container>]FuncArray, __Inner_Check_[<Method>], GetRegMark[<DerivedClass>](), [<DebugInfo>]);
       }        
     )raw"
   },
@@ -364,7 +396,7 @@ MacroDesc macro_descs[] = {
       namespace {
 	      template <typename ... ArgsT>
 	      void __Inner_Check_[<Method>] (  BaseClass& bc, ArgsT ... args ) {
-		      if ( bc.mark == GET_REG_MARK_METHOD([<DerivedClass>]) ) {
+		      if ( bc.mark == GetRegMark[<DerivedClass>]() ) {
 			      [<Method>]( static_cast<[<DerivedClass>]&>(bc), args... );
 		      }
 		      else {
@@ -374,7 +406,7 @@ MacroDesc macro_descs[] = {
 		      }
 	      }
 	      auto __Inner_Check_[<Method>]FncToPass = __Inner_Check_[<Method>]< )raw" PP_VARARG R"raw( >;
-	      REGISTER_METHOD([<Container>]FuncArray, __Inner_Check_[<Method>]FncToPass, GET_REG_MARK_METHOD([<DerivedClass>]), DebugInfo);
+	      PP_REGISTER_METHOD([<Container>]FuncArray, __Inner_Check_[<Method>]FncToPass, GetRegMark[<DerivedClass>](), DebugInfo);
       }
     )raw"
   },

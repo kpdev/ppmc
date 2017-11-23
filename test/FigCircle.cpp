@@ -11,9 +11,9 @@ REGISTER_SPECIALIZATION(Figure, FigCircle, "Registration of: FigCircle");
 
 INIT_v2(FigCircle);
 
-CREATE(FigCircle);
+v1_CREATE(FigCircle);
 
-IN(FigCircle, Circle);
+v1_IN(FigCircle, Circle);
 OUT(FigCircle, Circle);
 
 DELETE(FigCircle);

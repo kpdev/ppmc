@@ -18,9 +18,9 @@ OUT(FigCircle, Circle);
 
 DELETE(FigCircle);
 
-
+START_REGISTER_METHODS();
 REGISTER_METHOD_WITH_CHECK_RET_PTR(CreateFigureUseFileMark, CreateFigCircle, FigCircle, "Registration of CreateFigCircleUseFileMark", 3, Figure);
 PP_REGISTER_METHOD_WITH_CHECK(InFigureValue, In, "Registration of InFigCircleValue", FigCircle, ifstream&);
 PP_REGISTER_METHOD_WITH_CHECK(OutFigure, Out, "Registration of OutFigCircle", FigCircle, ofstream&);
-PP_REGISTER_METHOD_WITH_CHECK(DeleteFigure, DeleteFigCircle, "Registration of DeleteFigCircleSkin", FigCircle, void); // TODO: Avoid using "void" placeholder
+PP_v2_REGISTER_METHOD_WITH_CHECK(DeleteFigure, DeleteFigCircle, "Registration of DeleteFigCircleSkin", FigCircle); // TODO: Avoid using "void" placeholder
 

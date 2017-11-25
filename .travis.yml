@@ -21,4 +21,4 @@ script:
   - ls
   - cd output
   - make
-  - ./_build/labwork08
+  - ./_build/labwork08 ./_build/input.txt ./_build/output.txt

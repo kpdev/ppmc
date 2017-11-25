@@ -226,11 +226,11 @@ MacroDesc macro_descs[] = {
     },
     R"raw(
       typedef void (*[<TypeName>])([<BaseType>]&, [<BaseType>]&, )raw" PP_VARARG R"raw( );
-      extern [<TypeName>] [<TypeName>]##MMArray[][[<Dimension>]];
+      extern [<TypeName>] [<TypeName>]MMArray[][[<Dimension>]];
       template<typename ...ArgsT>
-      void [<TypeName>]##MM([<BaseType>] &p1, [<BaseType>] &p2, ArgsT ...args)
+      void [<TypeName>]MM([<BaseType>] &p1, [<BaseType>] &p2, ArgsT ...args)
       {
-        ([<TypeName>]##MMArray[p1.mark][p2.mark])( p1, p2, args... );
+        ([<TypeName>]MMArray[p1.mark][p2.mark])( p1, p2, args... );
       }
     )raw"
   },

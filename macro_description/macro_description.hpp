@@ -434,6 +434,33 @@ MacroDesc macro_descs[] = {
     )raw"
   },
   {
+    "PP_v2_REGISTER_METHOD_WITH_CHECK",
+    {
+      "[<Container>]",
+      "[<Method>]",
+      "[<DebugInfo>]",
+      "[<DerivedClass>]"
+    },
+    R"raw(
+      using BaseClass = [<DerivedClass>]::base_type;
+      namespace {
+	      template <typename ... ArgsT>
+	      void __Inner_Check_[<Method>] (  BaseClass& bc, ArgsT ... args ) {
+		      if ( bc.mark == GetRegMark[<DerivedClass>]() ) {
+			      [<Method>]( static_cast<[<DerivedClass>]&>(bc), args... );
+		      }
+		      else {
+			      cerr << " [<Method>] : incorrect convertion to"
+				      << " [<DerivedClass>] \n";
+			      throw;
+		      }
+	      }
+	      auto __Inner_Check_[<Method>]FncToPass = __Inner_Check_[<Method>]<>;
+	      PP_REGISTER_METHOD([<Container>]FuncArray, __Inner_Check_[<Method>]FncToPass, GetRegMark[<DerivedClass>](), [<DebugInfo>]);
+      }
+    )raw"
+  },
+  {
     "REGISTER_SPECIALIZATION",
     {
       "[<GenName>]",

@@ -15,17 +15,12 @@ CREATE_SPECIALIZATION(FigCircle, Figure, Circle);
 //------------------------------------------------------------------------------
 //  Функции используемые для обработки круга как специализации фигуры
 
- Инициализация существующей фигуры-круга
 void Init(FigCircle& fc, int r);
 
-
- Ввод специализации фигуры-круга из потока
 void In(FigCircle& fc, ifstream &ifst);
 
- Вывод специализации фигуры-круга в поток
 void Out(FigCircle& fc, ofstream &ofst);
 
- Удаление специализации фигуры-прямоугольника
 void DeleteFigCircle(FigCircle& pfc);
 
 #endif

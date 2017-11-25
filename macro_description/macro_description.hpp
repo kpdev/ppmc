@@ -429,7 +429,7 @@ MacroDesc macro_descs[] = {
 		      }
 	      }
 	      auto __Inner_Check_[<Method>]FncToPass = __Inner_Check_[<Method>]< )raw" PP_VARARG R"raw( >;
-	      PP_REGISTER_METHOD([<Container>]FuncArray, __Inner_Check_[<Method>]FncToPass, GetRegMark[<DerivedClass>](), DebugInfo);
+	      PP_REGISTER_METHOD([<Container>]FuncArray, __Inner_Check_[<Method>]FncToPass, GetRegMark[<DerivedClass>](), [<DebugInfo>]);
       }
     )raw"
   },

@@ -30,7 +30,7 @@ FigCircle* CreateFigCircleAndInit(int r) {
 }
 
 // Ввод специализации фигуры-треугольника из потока
-void In(FigTriangle& ft, ifstream &ifst) {
+void In(FigCircle& ft, ifstream &ifst) {
   Circle& t = ft._spec;
   In(ifst, t);
 }

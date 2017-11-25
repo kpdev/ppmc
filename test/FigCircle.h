@@ -6,11 +6,6 @@
 
 
 CREATE_SPECIALIZATION(FigCircle, Figure, Circle);
-//
-//FUNC_TES(Init, void, FigCircle, void);
-//FUNC_TES(In, void, FigCircle, ifstream&);
-//FUNC_TES(Out, void, FigCircle, ofstream&);
-//FUNC_TES(DeleteFigCircle, void, FigCircle, void);
 
 //------------------------------------------------------------------------------
 //  Функции используемые для обработки круга как специализации фигуры

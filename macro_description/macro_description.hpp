@@ -291,7 +291,7 @@ MacroDesc macro_descs[] = {
     },
     R"raw(
 			_array_alias[GetRegMark[<Type1>]()][GetRegMark[<Type2>]()] = [<SpecName>];
-			cout << "    multimethodFunc[" << GetRegMark[<Type1>]() << "][" << GetRegMark[<Type2>]() << "] = " [<SpecName>] << endl;
+			cout << "    multimethodFunc[" << GetRegMark[<Type1>]() << "][" << GetRegMark[<Type2>]() << "] = [<SpecName>] " << endl;
     )raw"
   },
   {

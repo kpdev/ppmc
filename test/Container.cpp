@@ -1,6 +1,7 @@
 // Container.cpp - Реализация функций, осуществляющих обработку контейнера
 
 #include "Container.h"
+#include <iostream>
 
 using std::endl;
 
@@ -29,8 +30,14 @@ void ClearContainer(Container& c) {
 
 // Ввод фигур в контейнер из потока
 void In(ifstream &ifst, Container& c) {
+  std::cerr << "CERR In\n";
+  std::cout << "COUT In\n";
     while(!ifst.eof()) {
+      std::cerr << "CERR In2\n";
+      std::cout << "COUT In2\n";
         if((c.storage[c.size] = InFigure(ifst)) != 0) {
+          std::cerr << "CERR In3\n";
+          std::cout << "COUT In3\n";
             c.size++;
         }
     }

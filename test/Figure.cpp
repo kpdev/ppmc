@@ -54,8 +54,10 @@ DEFINE_GEN_FUNC(DeleteFigure, 			specializationMax);
 // Данный признак может не совпадать с признаком фигуры
 Figure* CreateFigureUseFileMark(int fileMark) {
     Figure* pf;
+    std::cerr << "CreateFigureUseFileMark " << specNumber << "\n";
     for(int i = 0; i < specNumber; i++) {
         pf = CreateFigureUseFileMarkFuncArray[i](fileMark);
+        std::cerr << "CreateFigureUseFileMark In loop: " << i << " - " << pf != nullptr << "\n";
         if(pf != 0) return pf;
     }
     return 0;
@@ -76,9 +78,14 @@ Figure* InFigure(ifstream &ifst) {
     // Начинается с чтения признака фигуры, задаваемой в файле
     int fileMark;
     ifst >> fileMark;
+    std::cerr << "Filemark " << fileMark << "\n";
     // Создается конкретная фигура по полученному признаку
     Figure* pf = CreateFigureUseFileMark(fileMark);
-    if(pf == 0) return 0;
+    if (pf == 0)
+    {
+      std::cerr << "pf == 0\n";
+      return 0;
+    }
     InFigureValue(ifst, *pf);
     return pf;
 }

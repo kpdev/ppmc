@@ -1,6 +1,7 @@
 // Figure.cpp - Реализация функций, осуществляющих обработку обобщенной фигуры
 
 #include "Figure.h"
+#include <iostream>
 
 //------------------------------------------------------------------------------
 // Реализации глобальных переменных, обеспечивающих подключение зарегистрировнных функций
@@ -63,11 +64,11 @@ Figure* CreateFigureUseFileMark(int fileMark) {
 // Ввод значений полей фигуры-специализаии из потока через обобщенную функцию
 // после определения маркера фигуры из файла и создания конкретной фигуры
 void InFigureValue(ifstream &ifst, Figure& f) {
-    cout << "StartInfigure custom\n";
+    std::cerr << "StartInfigure custom\n";
     InFigureValueFunc func = InFigureValueFuncArray[f.mark];
-    cout << "StartInfigure custom 2\n";
+    std::cerr << "StartInfigure custom 2\n";
     func(f, ifst);
-    cout << "EndInfigure custom\n";
+    std::cerr << "EndInfigure custom\n";
 }
 
 // Ввод обобщенной фигуры из потока

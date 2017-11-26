@@ -57,7 +57,7 @@ Figure* CreateFigureUseFileMark(int fileMark) {
     std::cerr << "CreateFigureUseFileMark " << specNumber << "\n";
     for(int i = 0; i < specNumber; i++) {
         pf = CreateFigureUseFileMarkFuncArray[i](fileMark);
-        std::cerr << "CreateFigureUseFileMark In loop: " << i << " - " << pf != nullptr << "\n";
+        std::cerr << "CreateFigureUseFileMark In loop: " << i << " - " << (pf != nullptr) << "\n";
         if(pf != 0) return pf;
     }
     return 0;

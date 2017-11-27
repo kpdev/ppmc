@@ -32,12 +32,12 @@ int main(int argc, char* argv[])
 
     if (ifst.is_open())
     {
-      cout << "File OPEN! " << ifst;
+      cout << "File OPEN!\n";
     }
     else
     {
       cout << "File CLOSED\n";
-      return;
+      return 0;
     }
     Container c;
     Init(c);

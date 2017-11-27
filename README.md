@@ -1,4 +1,4 @@
-# ppmc (just planned)
+# ppmc
 Metacompiler for using procedural-parametric features
 
 [![Build Status](https://travis-ci.org/kpdev/ppmc.svg?branch=master)](https://travis-ci.org/kpdev/ppmc)
@@ -9,4 +9,4 @@ Metacompiler for using procedural-parametric features
 
 2) Запустить ./ppmc.out
 
-3) Программа прочитает все файлы из директории test, произведет в них замену макросов, результат работы запишет в файл test_out.txt и выведет в стандартный вывод.
+3) Программа прочитает все файлы из директории test, произведет в них замену макросов, результат работы запишет в директорию output, запустит в ней мейк, затем запустит полученную программу.

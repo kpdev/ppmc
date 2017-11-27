@@ -24,6 +24,7 @@ int main(int argc, char* argv[])
         cout << "incorrect command line! Wated: command infile outfile" << endl;
         return 1;
     }
+    cout << "Files: " << argv[1] << " " << argv[2] << "\n";
     ifstream ifst(argv[1]);
     ofstream ofst(argv[2]);
 

@@ -30,6 +30,15 @@ int main(int argc, char* argv[])
 
     cout << "Start"<< endl;
 
+    if (ifst.is_open())
+    {
+      cout << "File OPEN! " << ifst;
+    }
+    else
+    {
+      cout << "File CLOSED\n";
+      return;
+    }
     Container c;
     Init(c);
     In(ifst, c);

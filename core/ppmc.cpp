@@ -201,7 +201,9 @@ int main(int argc, char * argv[])
 
       auto& p_path = p.path();
       const fs::path textFilename = p_path.filename();
-      auto out_file_path = output_path / textFilename;
+
+      // TODO: Make it in generic way
+      auto out_file_path = p_path.parent_path().stem() == "_build" ? output_path / "_build" / textFilename : output_path / textFilename;
 
       std::ofstream cur_output_file(out_file_path.c_str());
       assert(cur_output_file.is_open());

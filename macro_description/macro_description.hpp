@@ -25,7 +25,10 @@ public:
 
   explicit ClassMarkRegistrar(Initializer init, const char* regInfo = nullptr)
   {
-    if (regInfo != nullptr) std::cout << regInfo << std::endl;
+    if (regInfo != nullptr)
+    {
+      std::cerr << regInfo << std::endl;
+    }
     init();
   }
 };
@@ -41,8 +44,9 @@ public:
     int index,
     const char* info = nullptr)
   {
-    if (info != nullptr) {
-      std::cout << info << "\n\tindex: " << index << '\n';
+    if (info != nullptr) 
+    {
+      std::cerr << info << "\n\tindex: " << index << '\n';
     }
 
     container[index] = method;

@@ -51,6 +51,7 @@ std::string parse_arg(const std::string& str, size_t& idx, bool is_vararg)
       ++parenteses_level;
     else if (str[idx] == ')' && parenteses_level != 0)
       --parenteses_level;
+
     const char cur_char = str[idx++];
     if (cur_char != ' ')
       result += cur_char;
@@ -86,7 +87,8 @@ std::string replace_placeholders_in_macro(const MacroDesc&  macro, const VectorS
   {
     const auto& cur_arg = macro.arguments[i];
     size_t nPos = str.find(cur_arg, 0);
-    while (nPos != std::string::npos) {
+    while (nPos != std::string::npos) 
+    {
       placeholdersPos[nPos] = i;
       nPos = str.find(cur_arg, nPos + 1);
     }
@@ -94,7 +96,8 @@ std::string replace_placeholders_in_macro(const MacroDesc&  macro, const VectorS
 
   std::string result;
   size_t prev_idx = 0;
-  for (auto& idxs : placeholdersPos) {
+  for (auto& idxs : placeholdersPos) 
+  {
     auto cur_macro_idx = idxs.second;
     auto cur_pos = idxs.first;
     result += str.substr(prev_idx, cur_pos - prev_idx);
@@ -118,7 +121,8 @@ std::string preprocess(const std::string& str, bool& was_changed)
   std::string result;
   size_t prev_idx = 0;
 
-  for (auto& idxs : macroces) {
+  for (auto& idxs : macroces) 
+  {
     auto cur_macro_idx = idxs.second;
     auto cur_pos = idxs.first;
     result += str.substr(prev_idx, cur_pos - prev_idx);
@@ -148,7 +152,8 @@ bool process_file(const fs::path& path, std::ofstream& output_file)
 {
   std::ifstream ifstr(path.c_str());
 
-  if (!ifstr.is_open()) {
+  if (!ifstr.is_open()) 
+  {
     std::cerr << "Cannot open the file\n";
     return false;
   }
@@ -164,9 +169,6 @@ bool process_file(const fs::path& path, std::ofstream& output_file)
     std::cerr << result << "\n\n\n\n";
   }
 
-
-  
-
   output_file << result;
 
   return true;
@@ -175,29 +177,16 @@ bool process_file(const fs::path& path, std::ofstream& output_file)
 
 int main(int argc, char * argv[])
 {
-  //ifstream ifst(argv[1]);
-  //if (!ifst.open) {
-  //  std::cerr << "Wrong filename\n";
-  //}
-
   const fs::path cur_dir = fs::current_path();
   const fs::path work_path = cur_dir / "test"; // TODO: Directory name as program argument
   const fs::path output_path = cur_dir / "output";
   fs::create_directories(output_path / "_build" / "obj");
 
-  // Just for debug purpose
-  // TODO: Remove
-  const auto test_output_file_path("test_out.txt");
-  std::ofstream test_output_file(test_output_file_path);
-  test_output_file.clear();
-
-  int debug = 0;
-
   for (auto & p : fs::recursive_directory_iterator(work_path))
   {
     if (fs::is_regular_file(p))
     {
-      test_output_file << "\nStart to process file: " << p << "\n";
+      std::cerr << "\nStart to process file: " << p << "\n";
 
       auto& p_path = p.path();
       const fs::path textFilename = p_path.filename();
@@ -209,16 +198,10 @@ int main(int argc, char * argv[])
       assert(cur_output_file.is_open());
 
       process_file(p, cur_output_file) ?
-        test_output_file << "\n[SUCCESS]\n" :
-        test_output_file << "\n[FAIL]\n";
+        std::cerr << "\n[SUCCESS]\n" :
+        std::cerr << "\n[FAIL]\n";
     }
   }
-
-  test_output_file.flush();
-  auto file_to_read = std::ifstream(test_output_file_path);
-  auto resulted_str = get_str_from_file(file_to_read);
-
-  std::cerr << resulted_str << "\n";
 
   return EXIT_SUCCESS;
 }

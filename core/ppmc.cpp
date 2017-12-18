@@ -24,26 +24,34 @@ namespace fs = std::experimental::filesystem::v1;
 using IndexedMacrocesType = std::map<size_t, unsigned>;
 
 
+// Заполнить массив индексов 'macroces' (это std::map<индекс начала макроса в строке 'str', индекс макроса из массива 'container'>)
 void fill_macro_idxs(const MacroDesc(&container)[macroces_count], IndexedMacrocesType& macroces, const std::string& str)
 {
   for (auto& m : container) 
   {
+    // Получаем индекс макроса
     auto cur_id = &m - &container[0];
+    // Получаем имя макроса
     auto& cur_name = m.name;
+    // Находим индекс вхождения этого макроса в строку 'str'
+    // и запоминаем его, если он не равен концу строки
 		size_t nPos = str.find(cur_name, 0);
     while (nPos != std::string::npos)
     {
       macroces[nPos] = cur_id;
+      // Ищем следующее вхождение этого ммакроса в строку 'str'
       nPos = str.find(cur_name, nPos + 1);
     }
   }
 }
 
 
+// Получить аргумент, переданный в макрос
 std::string parse_arg(const std::string& str, size_t& idx, bool is_vararg)
 {
   std::string result;
   unsigned parenteses_level = 0;
+  // Идем по строке, пока не встретится последняя закрывающая скобка или запятая (если арумент - не VARARG)
   while ((is_vararg || (!is_vararg && str[idx] != ','))
     && (str[idx] != ')' || parenteses_level > 0))
   {
@@ -56,16 +64,18 @@ std::string parse_arg(const std::string& str, size_t& idx, bool is_vararg)
     if (cur_char != ' ')
       result += cur_char;
   }
+  // Возвращаем полученное имя аргумента (или список аргумннтов в случае VARARG)
   return result;
 }
 
-
+// Получить аргументы макроса в виде вектора строк
 VectorStr get_arguments(const std::string& str, size_t& idx, const VectorStr& arguments_names)
 {
+  // Сюда должна быть передана строка, начинающаяся на открывающую левую скобку
   assert(str[idx] == '(');
   idx++;
   VectorStr result;
-  unsigned nested_braces_level{ 0 };
+  // Идем в цикле, пока не встретится закрывающая скобка
   while (str[idx] != ')') 
   {
     const auto& cur_mmacro_arg = arguments_names[result.size()];
@@ -79,8 +89,10 @@ VectorStr get_arguments(const std::string& str, size_t& idx, const VectorStr& ar
 }
 
 
+// Вставка аргументов в тело макроса
 std::string replace_placeholders_in_macro(const MacroDesc&  macro, const VectorStr& arguments)
 {
+  // Заполняем массив <индекс вхождения аргумента в тело макроса, индекс аргумента>
   std::map<size_t, size_t> placeholdersPos; // TODO: Fill this map only once
   const auto& str = macro.value;
   for (size_t i = 0; i < macro.arguments.size(); ++i) 
@@ -94,17 +106,21 @@ std::string replace_placeholders_in_macro(const MacroDesc&  macro, const VectorS
     }
   }
 
+  // Проходим по полученному массиву и вставляем переднные аргументы в макрос
   std::string result;
   size_t prev_idx = 0;
   for (auto& idxs : placeholdersPos) 
   {
     auto cur_macro_idx = idxs.second;
     auto cur_pos = idxs.first;
+    // Получаем строку до вхождения аргумента
     result += str.substr(prev_idx, cur_pos - prev_idx);
 
     assert(cur_macro_idx < arguments.size());
+    // Берем нужный аргумент
     auto& replacer = arguments[cur_macro_idx];
     prev_idx = cur_pos + macro.arguments[cur_macro_idx].size();
+    // Добавляем этот аргумент к результирующей строке
     result += replacer;
   }
   result += str.substr(prev_idx);
@@ -113,8 +129,13 @@ std::string replace_placeholders_in_macro(const MacroDesc&  macro, const VectorS
 }
 
 
+// Функция,проходящая по файлу и вызывающая замену описания макросов на их тела
 std::string preprocess(const std::string& str, bool& was_changed)
 {
+  // Заполняем индексы макросов
+  // то есть заполняем std::map, 
+  // в котором ключем служит индекс символа начала макроса в строке 'str'
+  // а значением является индекс макроса в массиве 'macro_descs'
   IndexedMacrocesType macroces;
   fill_macro_idxs(macro_descs, macroces, str);
 
@@ -125,21 +146,26 @@ std::string preprocess(const std::string& str, bool& was_changed)
   {
     auto cur_macro_idx = idxs.second;
     auto cur_pos = idxs.first;
+    // Получаем строку до вхождения макроса
     result += str.substr(prev_idx, cur_pos - prev_idx);
-
+    // Тело макроса записываем в переменную 'replacer'
     auto& replacer = macro_descs[cur_macro_idx];
     prev_idx = cur_pos + replacer.name.size();
+    // Парсим аргументы макроса
     auto arguments = get_arguments(str, prev_idx, replacer.arguments);
+    // Вставляем полученные аргументы в макрос
     auto replace_text = replace_placeholders_in_macro(replacer, arguments);
-
+    // Запысываем полученное тело макроса в результирующую строку
     result += replace_text;
   }
+  // Получаем и запысываем остаток строки (там уже нет никаких макросов)
   result += str.substr(prev_idx);
   was_changed = !macroces.empty();
   return result;
 }
 
 
+// Считываем симовлы из файла, формируем строку и возвращаем ее
 std::string get_str_from_file(std::ifstream& file)
 {
   std::string str((std::istreambuf_iterator<char>(file)),
@@ -148,6 +174,8 @@ std::string get_str_from_file(std::ifstream& file)
 }
 
 
+// Заменяем найденные имена макросов в файле на тела макросов (описаны в macro_description.hpp)
+// Возвращаем true, если замена прошла без ошибок
 bool process_file(const fs::path& path, std::ofstream& output_file)
 {
   std::ifstream ifstr(path.c_str());
@@ -160,15 +188,17 @@ bool process_file(const fs::path& path, std::ofstream& output_file)
 
   std::string str = get_str_from_file(ifstr);
 
+  // Проводим замену макросов в файле итеративно
+  // Так как каждый макрос может содержать в своем теле описание других макросов,
+  // вызываем функцию preprocess до техпор,пока она не вернет false (макросы не найдены)
   bool was_changed = false;
   std::string result = preprocess(str, was_changed);
-
   while (was_changed)
   {
     result = preprocess(result, was_changed);
-    std::cerr << result << "\n\n\n\n";
   }
 
+  // Записываем строку со всеми раскрытыми макросами в файл
   output_file << result;
 
   return true;
@@ -177,11 +207,14 @@ bool process_file(const fs::path& path, std::ofstream& output_file)
 
 int main(int argc, char * argv[])
 {
+  // Пути к входным и выходным файлам
+  // Сейчас они захардкожены, нужно будет исправить
   const fs::path cur_dir = fs::current_path();
   const fs::path work_path = cur_dir / "test"; // TODO: Directory name as program argument
   const fs::path output_path = cur_dir / "output";
   fs::create_directories(output_path / "_build" / "obj");
 
+  // Проходим по всем файлам директории (и поддиректориям) "test"
   for (auto & p : fs::recursive_directory_iterator(work_path))
   {
     if (fs::is_regular_file(p))
@@ -197,6 +230,7 @@ int main(int argc, char * argv[])
       std::ofstream cur_output_file(out_file_path.c_str());
       assert(cur_output_file.is_open());
 
+      // Подставляем макросы
       process_file(p, cur_output_file) ?
         std::cerr << "\n[SUCCESS]\n" :
         std::cerr << "\n[FAIL]\n";

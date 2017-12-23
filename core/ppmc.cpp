@@ -201,7 +201,7 @@ void insert_init_func(std::string& str)
 
       // TODO: Remove these string to functions
       std::string initFuncInvokation = "\n\npplib_Init();\n\n";
-      std::string initFuncDefinition = "\n\n#include <cstdlib>\nvoid pplib_Init()\n{\n /* Init */ printf(\"Hello PPLIB\\n\"); \n}\n\n";
+      std::string initFuncDefinition = "\n\n#include <cstdio>\nvoid pplib_Init()\n{\n /* Init */ printf(\"Hello PPLIB\\n\"); \n}\n\n";
 
       // Записываем вызов инициализирующей функции в самое начало 'main'
       // А определение инициализирующей функции в самое начало текущего файла

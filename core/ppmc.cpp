@@ -1,6 +1,7 @@
 
 #include "../macro_description/macro_description.hpp"
 
+#include <regex>
 #include <iostream>
 #include <fstream>
 #include <map>
@@ -174,6 +175,45 @@ std::string get_str_from_file(std::ifstream& file)
 }
 
 
+// Вставить функцию инициализации библиотеки в main, 
+void insert_init_func(std::string& str)
+{
+  // Проверяем, есть ли в файле 'main'
+  // TODO: make it with regex
+  const std::string main_fn_name{ "main" };
+  if (auto pos = str.find(main_fn_name, 0); pos != std::string::npos)
+  {
+    // Проверяем, что это именно необходимая нам главная функция
+    const auto prevChar = str[pos - 1];
+    const bool isPrevCharSpace = (prevChar == ' ' || prevChar == '\n');
+    const auto nextChar = str[pos + main_fn_name.size()];
+    const bool isNextCharSpaceOrBrace = (nextChar == ' ' || nextChar == '\n' || nextChar == '(');
+    if (isPrevCharSpace && isNextCharSpaceOrBrace)
+    {
+      // Находим открывающую скобку
+      pos += main_fn_name.size();
+      while (str[pos] != '{')
+      {
+        ++pos;
+        assert(pos < str.size());
+      }
+
+      // TODO: Remove these string to functions
+      std::string initFuncInvokation = "\n\npplib_Init();\n\n";
+      std::string initFuncDefinition = "\n\n#include <cstdlib>\nvoid pplib_Init()\n{\n /* Init */ printf(\"Hello PPLIB\\n\"); \n}\n\n";
+
+      // Записываем вызов инициализирующей функции в самое начало 'main'
+      // А определение инициализирующей функции в самое начало текущего файла
+      str.insert(str.begin() + pos + 1, 
+        initFuncInvokation.begin(), initFuncInvokation.end());
+      str.insert(str.begin(), 
+        initFuncDefinition.begin(), initFuncDefinition.end());
+    }
+  }
+
+}
+
+
 // Заменяем найденные имена макросов в файле на тела макросов (описаны в macro_description.hpp)
 // Возвращаем true, если замена прошла без ошибок
 bool process_file(const fs::path& path, std::ofstream& output_file)
@@ -197,6 +237,9 @@ bool process_file(const fs::path& path, std::ofstream& output_file)
   {
     result = preprocess(result, was_changed);
   }
+
+  // Вставить инициализирующую функцию, если в этом файле находится функция 'main'
+  insert_init_func(result);
 
   // Записываем строку со всеми раскрытыми макросами в файл
   output_file << result;

@@ -181,7 +181,8 @@ void insert_init_func(std::string& str)
   // Проверяем, есть ли в файле 'main'
   // TODO: make it with regex
   const std::string main_fn_name{ "main" };
-  if (auto pos = str.find(main_fn_name, 0); pos != std::string::npos)
+  auto pos = str.find(main_fn_name, 0);
+  if (pos != std::string::npos)
   {
     // Проверяем, что это именно необходимая нам главная функция
     const auto prevChar = str[pos - 1];

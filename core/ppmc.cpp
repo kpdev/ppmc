@@ -1,5 +1,13 @@
 
-#include "../macro_description/macro_description.hpp"
+
+// #define PPMC_CPP
+#define PPMC_PLAIN_C
+
+#ifdef PPMC_CPP
+#include "../macro_description/cpp_macro_description.hpp"
+#elif defined(PPMC_PLAIN_C)
+#include "../macro_description/plain_c_macro_description.hpp"
+#endif // PPMC_CPP
 
 #include <regex>
 #include <iostream>
@@ -175,6 +183,22 @@ std::string get_str_from_file(std::ifstream& file)
 }
 
 
+std::string getInitFuncInvoation()
+{
+#if defined(PPMC_CPP) || defined(PPMC_PLAIN_C)
+  return "\n\npplib_Init();\n\n";
+#endif // PPMC_CPP
+}
+
+
+std::string getInitFuncDefinition()
+{
+#if defined(PPMC_CPP) || defined(PPMC_PLAIN_C)
+  return  "\n\n#include <cstdio>\nvoid pplib_Init()\n{\n /* Init */ printf(\"Hello PPLIB\\n\"); \n}\n\n";
+#endif // PPMC_CPP
+}
+
+
 // Вставить функцию инициализации библиотеки в main, 
 void insert_init_func(std::string& str)
 {
@@ -254,7 +278,12 @@ int main(int argc, char * argv[])
   // Пути к входным и выходным файлам
   // Сейчас они захардкожены, нужно будет исправить
   const fs::path cur_dir = fs::current_path();
-  const fs::path work_path = cur_dir / "test"; // TODO: Directory name as program argument
+#ifdef PPMC_CPP
+  const fs::path work_path = cur_dir / "test_cpp"; // TODO: Directory name as program argument
+#elif defined(PPMC_PLAIN_C)
+  const fs::path work_path = cur_dir / "test_plain_c"; // TODO: Directory name as program argument
+#endif
+  
   const fs::path output_path = cur_dir / "output";
   fs::create_directories(output_path / "_build" / "obj");
 

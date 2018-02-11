@@ -1,29 +1,28 @@
-#ifndef __Circle__
-#define __Circle__
+#ifndef PPMC__Circle__
+#define PPMC__Circle__
+
+#include <stdio.h>
 
 //------------------------------------------------------------------------------
 // Структура Circle, определяющая содержимое круга
-struct Circle {
-    // Радиус круга
-    int r;
-};
+typedef struct {
+  // Радиус круга
+  int r;
+} Circle;
 
 //------------------------------------------------------------------------------
 //  Функции используемые для обработки круга
 
 // Инициализация существующего круга
-void Init(Circle& c, int r);
+void Init(Circle* c, int r);
 
 // Создание круга с инициализаций сторон
 Circle* CreateCircleAndInit(int r);
 
-#include <fstream>
-using namespace std;
-
 // Ввод данных в существующий круг из потока
-void In(ifstream &ifst, Circle& c);
+void In(FILE *infile, Circle* c);
 
 // Вывод данных о круг в поток
-void Out(ofstream &ofst, Circle& c);
+void Out(FILE * outfile, Circle* c);
 
 #endif

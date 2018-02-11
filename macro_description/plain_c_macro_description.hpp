@@ -1,6 +1,8 @@
 #pragma once
 
 #include <vector>
+#include <string>
+#include <cstddef>
 
 // TODO: Move it to common part
 using VectorStr = std::vector<std::string>;
@@ -20,15 +22,15 @@ MacroDesc macro_descs[] = {
     {
       "[<TypeName>]"
     },
-  R"raw(
-        template <typename [<TypeName>], typename ... TArgs>
-        void Init([<TypeName>]& generalizationName, TArgs ... args)
-        {
-          generalizationName.mark = GetRegMark[<TypeName>]();
-          auto& c = generalizationName._spec;
-          Init(c, args...);
-        }
-      )raw"
+    R"raw(
+          template <typename [<TypeName>], typename ... TArgs>
+          void Init([<TypeName>]& generalizationName, TArgs ... args)
+          {
+            generalizationName.mark = GetRegMark[<TypeName>]();
+            auto& c = generalizationName._spec;
+            Init(c, args...);
+          }
+        )raw"
   }
 };
   

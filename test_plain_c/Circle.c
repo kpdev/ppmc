@@ -6,24 +6,24 @@
 //  Функции используемые для обработки круга
 
 // Инициализация существующего круга
-void Init(Circle& c, int r) {
-    c.r = r;
+void Init(Circle* c, int r) {
+    c->r = r;
 }
 
 
 // Создание круга с инициализаций сторон
 Circle* CreateCircleAndInit(int r) {
-    Circle* pc = new Circle;
-    Init(*pc, r);
-    return pc;
+  Circle* pc = malloc(sizeof(Circle));
+  Init(pc, r);  
+  return pc;
 }
 
 // Ввод данных в существующий круг из потока
-void In(ifstream &ifst, Circle& c) {
-    ifst >> c.r;
+void In(FILE *infile, Circle* c) {
+  // TODO: Read from file
 }
 
 // Вывод данных о круге в поток
-void Out(ofstream &ofst, Circle& c) {
-    ofst << "Circle: r = " << c.r << endl;
+void Out(FILE * outfile, Circle* c) {
+  // TODO: Write circle data to file
 }

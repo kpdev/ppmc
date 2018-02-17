@@ -288,10 +288,15 @@ int main(int argc, char * argv[])
   fs::create_directories(output_path / "_build" / "obj");
 
   // Проходим по всем файлам директории (и поддиректориям) "test"
+  int debugCount = 0;
   for (auto & p : fs::recursive_directory_iterator(work_path))
   {
     if (fs::is_regular_file(p))
     {
+      if (debugCount++ > 3)
+      {
+        break;
+      }
       std::cerr << "\nStart to process file: " << p << "\n";
 
       auto& p_path = p.path();

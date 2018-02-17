@@ -20,7 +20,8 @@ script:
   - ./ppmc.out
   - ls
   - cd output
-  - make
-  - cd ./_build
-  - ls
-  - ./labwork08 ./input.txt ./output.txt
+  # TODO: Uncomment it when ppmc for plain c will be implemented
+  # - make
+  # - cd ./_build
+  # - ls
+  # - ./labwork08 ./input.txt ./output.txt

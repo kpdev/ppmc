@@ -34,7 +34,7 @@ using IndexedMacrocesType = std::map<size_t, unsigned>;
 
 
 // Заполнить массив индексов 'macroces' (это std::map<индекс начала макроса в строке 'str', индекс макроса из массива 'container'>)
-void fill_macro_idxs(const MacroDesc(&container)[macroces_count], IndexedMacrocesType& macroces, const std::string& str)
+void fill_macro_idxs(const std::vector<MacroDesc> &container, IndexedMacrocesType& macroces, const std::string& str)
 {
   for (auto& m : container) 
   {

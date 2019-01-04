@@ -18,21 +18,18 @@ struct Container {
 //  Функции используемые для обработки контейнера
 
 // Инициализация существующего контейнера
-void Init(Container& c);
+void Init(Container* c);
 
 // Создание контейнера
 Container* CreateContainer(int x, int y);
 
 // Очистка контейнера от фигур
-void ClearContainer(Container& c);
-
-//#include <fstream> - присутствуют в подключаемых файлах
-//using namespace std;
+void ClearContainer(Container* c);
 
 // Ввод фигур в контейнер из потока
-void In(ifstream &ifst, Container& c);
+void In(FILE* ifst, Container* c);
 
 // Вывод фигур из контейнера в поток
-void Out(ofstream &ofst, Container& c);
+void Out(FILE* ofst, Container* c);
 
 #endif

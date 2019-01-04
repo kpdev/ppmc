@@ -288,19 +288,21 @@ int main(int argc, char * argv[])
   fs::create_directories(output_path / "_build" / "obj");
 
   // Проходим по всем файлам директории (и поддиректориям) "test"
-  int debugCount = 0;
   for (auto & p : fs::recursive_directory_iterator(work_path))
   {
     if (fs::is_regular_file(p))
     {
-      if (debugCount++ > 3)
-      {
-        break;
-      }
       std::cerr << "\nStart to process file: " << p << "\n";
 
       auto& p_path = p.path();
       const fs::path textFilename = p_path.filename();
+
+      if (textFilename != "main.c"
+        && textFilename != "Figure.h"
+        && textFilename != "Container.h")
+      {
+        continue;
+      }
 
       // TODO: Make it in generic way
       auto out_file_path = p_path.parent_path().stem() == "_build" ? output_path / "_build" / textFilename : output_path / textFilename;

@@ -16,5 +16,24 @@ std::vector<MacroDesc> macro_descs = {
         Init(c, args...);
       }
     )raw"
+  },
+  {
+    "PPLIB_DEFINE_INIT",
+    {
+    },
+    R"raw(
+      void pplib_init()
+      {
+        /* Init */ printf("Hello PPLIB\n");
+      }
+    )raw"
+  },
+  {
+    "PPLIB_INIT",
+    {
+    },
+    R"raw(
+      pplib_init();
+    )raw"
   }
 };

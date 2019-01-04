@@ -7,10 +7,6 @@
 
 #include "Container.h"
 
-void pplib_Init()
-{
-  /* Init */ printf("Hello PPLIB\n");
-}
 
 //================================================================================
 // Изменение клиентского кода, обусловленного добавлением новой функциональности
@@ -26,6 +22,7 @@ void MultimethodTestOut(FILE* ofst, Container* c);
 // TODO: REPLACE C++ TO PLAIN C
 int main(int argc, char* argv[])
 {
+
     if(argc !=3) {
         cout << "incorrect command line! Wated: command infile outfile" << endl;
         return 1;

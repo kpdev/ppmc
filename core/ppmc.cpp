@@ -183,7 +183,7 @@ std::string get_str_from_file(std::ifstream& file)
 }
 
 
-std::string getInitFuncInvoation()
+std::string getInitFuncInvocation()
 {
 #if defined(PPMC_CPP) || defined(PPMC_PLAIN_C)
   return "\n\npplib_Init();\n\n";
@@ -193,8 +193,24 @@ std::string getInitFuncInvoation()
 
 std::string getInitFuncDefinition()
 {
-#if defined(PPMC_CPP) || defined(PPMC_PLAIN_C)
-  return  "\n\n#include <cstdio>\nvoid pplib_Init()\n{\n /* Init */ printf(\"Hello PPLIB\\n\"); \n}\n\n";
+#if defined(PPMC_CPP)
+  return  R"raw(
+#include <cstdio>
+void pplib_Init()
+{
+  /* Init */ 
+  printf("Hello PPLIB\n");
+}
+)raw";
+#elif defined(PPMC_PLAIN_C)
+  return  R"raw(
+#include <stdio.h>
+void pplib_Init(void)
+{
+  /* Init */ 
+  printf("Hello PPLIB\n");
+}
+)raw";
 #endif // PPMC_CPP
 }
 
@@ -223,9 +239,8 @@ void insert_init_func(std::string& str)
         assert(pos < str.size());
       }
 
-      // TODO: Remove these string to functions
-      std::string initFuncInvokation = "\n\npplib_Init();\n\n";
-      std::string initFuncDefinition = "\n\n#include <cstdio>\nvoid pplib_Init()\n{\n /* Init */ printf(\"Hello PPLIB\\n\"); \n}\n\n";
+      const auto initFuncInvokation = getInitFuncInvocation();
+      const auto initFuncDefinition = getInitFuncDefinition();
 
       // Записываем вызов инициализирующей функции в самое начало 'main'
       // А определение инициализирующей функции в самое начало текущего файла

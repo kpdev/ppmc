@@ -64,7 +64,7 @@ Figure* CreateFigureUseFileMark(int fileMark) {
 
 // Ввод значений полей фигуры-специализаии из потока через обобщенную функцию
 // после определения маркера фигуры из файла и создания конкретной фигуры
-void InFigureValue(FILE* ifst, Figure* f) {
+void InFigureValue(Figure* f, FILE* ifst) {
     printf("StartInfigure custom\n");
     InFigureValueFunc func = InFigureValueFuncArray[f->mark];
     printf("StartInfigure custom 2\n");
@@ -76,7 +76,7 @@ void InFigureValue(FILE* ifst, Figure* f) {
 Figure* InFigure(FILE* ifst) {
     // Начинается с чтения признака фигуры, задаваемой в файле
     int fileMark;
-    fscanf(ifst, "%d", &fileMark);
+    fscanf_s(ifst, "%d", &fileMark);
     printf("InFigure Filemark %d\n", fileMark);
     // Создается конкретная фигура по полученному признаку
     Figure* pf = CreateFigureUseFileMark(fileMark);
@@ -85,7 +85,7 @@ Figure* InFigure(FILE* ifst) {
       printf("InFigure pf == 0\n");
       return 0;
     }
-    InFigureValue(ifst, pf);
+    InFigureValue(pf, ifst);
     return pf;
 }
 

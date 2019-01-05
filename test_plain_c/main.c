@@ -27,12 +27,14 @@ int main(int argc, char* argv[])
         return 1;
     }
     printf("Files: %s %s\n", argv[1], argv[2]);
-    FILE* ifst = fopen(argv[1], "rw");
-    FILE* ofst = fopen(argv[2], "rw");
+    FILE* ifst;
+    FILE* ofst;
+    errno_t ifsterr = fopen_s(&ifst, argv[1], "rw");
+    errno_t ofsterr = fopen_s(&ofst, argv[2], "rw");
 
     printf("Start\n");
 
-    if (ifst == NULL || ofst == NULL)
+    if (ifsterr != 0 || ofsterr != 0)
     {
       printf("ERROR. Files cannot be opened\n");
       return 1;

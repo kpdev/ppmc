@@ -35,5 +35,31 @@ std::vector<MacroDesc> macro_descs = {
     R"raw(
       pplib_init();
     )raw"
-  }
+  },
+  {
+    "CREATE_GENERALIZATION",
+    {
+      "[<Name>]"
+    },
+    R"raw(
+      struct [<Name>] { 
+          int mark; 
+      }; 
+      typedef struct [<Name>] [<Name>]; 
+      int GetSpecNumAndIncrement[<Name>]();
+    )raw"
+  } ,
+  {
+    "DECLARE_GEN_FUNC",
+    {
+      "[<TypeName>]",
+      "[<RetType>]",
+      PP_VARARG
+    },
+    R"raw(
+      typedef [<RetType>] (*[<TypeName>]Func)( )raw" PP_VARARG R"raw( ); \
+      extern [<TypeName>]Func [<TypeName>]FuncArray[]; \
+      [<RetType>] [<TypeName>]( )raw" PP_VARARG R"raw( );
+    )raw"
+  },
 };

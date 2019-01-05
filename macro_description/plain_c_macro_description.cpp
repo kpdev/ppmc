@@ -62,4 +62,26 @@ std::vector<MacroDesc> macro_descs = {
       [<RetType>] [<TypeName>]( )raw" PP_VARARG R"raw( );
     )raw"
   },
+  {
+    "DEFINE_GENERALIZATION_METHOD",
+    {
+      "[<Name>]"
+    },
+    R"raw(
+      static int specNumber = 0; 
+      int GetSpecNumAndIncrement[<Name>]() { 
+          return specNumber++; 
+      }
+    )raw"
+  },
+  {
+    "DEFINE_GEN_FUNC",
+    {
+      "[<TypeName>]",
+      "[<Number>]"
+    },
+    R"raw(
+      [<TypeName>]Func [<TypeName>]FuncArray[ [<Number>] ];
+    )raw"
+  },
 };

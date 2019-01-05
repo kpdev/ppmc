@@ -22,43 +22,41 @@ void MultimethodTestOut(FILE* ofst, Container* c);
 // TODO: REPLACE C++ TO PLAIN C
 int main(int argc, char* argv[])
 {
-
-    if(argc !=3) {
-        cout << "incorrect command line! Wated: command infile outfile" << endl;
+    if(argc != 3) {
+        printf("incorrect command line! Waited: command infile outfile\n");
         return 1;
     }
-    cout << "Files: " << argv[1] << " " << argv[2] << "\n";
-    ifstream ifst(argv[1]);
-    ofstream ofst(argv[2]);
+    printf("Files: %s %s\n", argv[1], argv[2]);
+    FILE* ifst = fopen(argv[1], "rw");
+    FILE* ofst = fopen(argv[2], "rw");
 
+    printf("Start\n");
 
-    cout << "Start"<< endl;
-
-    if (ifst.is_open())
+    if (ifst == NULL || ofst == NULL)
     {
-      cout << "File OPEN!\n";
+      printf("ERROR. Files cannot be opened\n");
+      return 1;
     }
-    else
-    {
-      cout << "File CLOSED\n";
-      return 0;
-    }
+
     Container c;
-    Init(c);
-    In(ifst, c);
+    Init(&c);
+    In(ifst, &c);
 
-    ofst << "Filled container. " << endl;
-    Out(ofst, c);
+    printf("Filled container.\n");
+    Out(ofst, &c);
 
     // Добавление в клиентский код вызова мультиметода
-    ofst << "Test of multimethods. " << endl;
-    MultimethodTestOut(ofst, c);
+    printf("Test of multimethods.\n");
+    MultimethodTestOut(ofst, &c);
 
-    ClearContainer(c);
+    ClearContainer(&c);
 
-    ofst << "Empty container. " << endl;
-    Out(ofst, c);
+    printf("Empty container.\n");
+    Out(ofst, &c);
 
-    cout << "Stop"<< endl;
+    printf("Stop\n");
+
+    fclose(ofst);
+    fclose(ifst);
     return 0;
 }

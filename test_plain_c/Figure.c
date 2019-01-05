@@ -1,7 +1,6 @@
 // Figure.cpp - Реализация функций, осуществляющих обработку обобщенной фигуры
 
 #include "Figure.h"
-#include <iostream>
 
 //------------------------------------------------------------------------------
 // Реализации глобальных переменных, обеспечивающих подключение зарегистрировнных функций
@@ -41,7 +40,7 @@ DeleteFigureFunc deleteFigure[10];
 
 DEFINE_GENERALIZATION_METHOD(Figure);
 
-static const unsigned specializationMax = 10;
+#define specializationMax 10
 DEFINE_GEN_FUNC(CreateFigureUseFileMark, 	specializationMax);
 DEFINE_GEN_FUNC(InFigureValue, 			specializationMax);
 DEFINE_GEN_FUNC(OutFigure, 				specializationMax);
@@ -54,10 +53,10 @@ DEFINE_GEN_FUNC(DeleteFigure, 			specializationMax);
 // Данный признак может не совпадать с признаком фигуры
 Figure* CreateFigureUseFileMark(int fileMark) {
     Figure* pf;
-    std::cerr << "CreateFigureUseFileMark " << fileMark << " / " << specNumber << "\n";
+    printf("CreateFigureUseFileMark %d / %d\n", fileMark, specNumber);
     for(int i = 0; i < specNumber; i++) {
         pf = CreateFigureUseFileMarkFuncArray[i](fileMark);
-        std::cerr << "CreateFigureUseFileMark In loop: " << i << " - " << (pf != nullptr) << "\n";
+        printf("CreateFigureUseFileMark In loop: %d - %d\n", i, (int)(pf != NULL));
         if(pf != 0) return pf;
     }
     return 0;
@@ -65,39 +64,39 @@ Figure* CreateFigureUseFileMark(int fileMark) {
 
 // Ввод значений полей фигуры-специализаии из потока через обобщенную функцию
 // после определения маркера фигуры из файла и создания конкретной фигуры
-void InFigureValue(ifstream &ifst, Figure& f) {
-    std::cerr << "StartInfigure custom\n";
-    InFigureValueFunc func = InFigureValueFuncArray[f.mark];
-    std::cerr << "StartInfigure custom 2\n";
+void InFigureValue(FILE* ifst, Figure* f) {
+    printf("StartInfigure custom\n");
+    InFigureValueFunc func = InFigureValueFuncArray[f->mark];
+    printf("StartInfigure custom 2\n");
     func(f, ifst);
-    std::cerr << "EndInfigure custom\n";
+    printf("EndInfigure custom\n");
 }
 
 // Ввод обобщенной фигуры из потока
-Figure* InFigure(ifstream &ifst) {
+Figure* InFigure(FILE* ifst) {
     // Начинается с чтения признака фигуры, задаваемой в файле
     int fileMark;
-    ifst >> fileMark;
-    std::cerr << "InFigure Filemark " << fileMark << "\n";
+    fscanf(ifst, "%d", &fileMark);
+    printf("InFigure Filemark %d\n", fileMark);
     // Создается конкретная фигура по полученному признаку
     Figure* pf = CreateFigureUseFileMark(fileMark);
     if (pf == 0)
     {
-      std::cerr << "InFigure pf == 0\n";
+      printf("InFigure pf == 0\n");
       return 0;
     }
-    InFigureValue(ifst, *pf);
+    InFigureValue(ifst, pf);
     return pf;
 }
 
 // Вывод обобщенной фигуры в поток
-void OutFigure(Figure& f, ofstream &ofst) {
-    OutFigureFunc func = OutFigureFuncArray[f.mark];
+void OutFigure(Figure* f, FILE* ofst) {
+    OutFigureFunc func = OutFigureFuncArray[f->mark];
     func(f, ofst);
 }
 
 // Удаление обобщенной фигуры
 void DeleteFigure(Figure* pf) {
     DeleteFigureFunc func = DeleteFigureFuncArray[pf->mark];
-    func(*pf);
+    func(pf);
 }

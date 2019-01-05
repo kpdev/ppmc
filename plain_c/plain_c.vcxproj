@@ -115,6 +115,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\output\Container.c" />
+    <ClCompile Include="..\output\Figure.c" />
     <ClCompile Include="..\output\main.c" />
   </ItemGroup>
   <ItemGroup>

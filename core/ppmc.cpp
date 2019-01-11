@@ -314,9 +314,13 @@ int main(int argc, char * argv[])
 
       if (textFilename != "main.c"
         && textFilename != "Figure.h"
-        && textFilename != "Container.h"
         && textFilename != "Figure.c"
+        && textFilename != "Container.h"
         && textFilename != "Container.c"
+        && textFilename != "Circle.h"
+        && textFilename != "Circle.c"
+        && textFilename != "FigCircle.h"
+        && textFilename != "FigCircle.c"
         )
       {
         continue;

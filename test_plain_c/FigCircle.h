@@ -10,12 +10,12 @@ CREATE_SPECIALIZATION(FigCircle, Figure, Circle);
 //------------------------------------------------------------------------------
 //  Функции используемые для обработки круга как специализации фигуры
 
-void Init(FigCircle& fc, int r);
+void InitFigCircle(FigCircle* fc, int r);
 
-void In(FigCircle& fc, ifstream &ifst);
+void InFigCircle(FigCircle* fc, FILE* ifst);
 
-void Out(FigCircle& fc, ofstream &ofst);
+void OutFigCircle(FigCircle* fc, FILE* ofst);
 
-void DeleteFigCircle(FigCircle& pfc);
+void DeleteFigCircle(FigCircle* pfc);
 
 #endif

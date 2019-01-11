@@ -115,12 +115,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\output\Circle.c" />
     <ClCompile Include="..\output\Container.c" />
+    <ClCompile Include="..\output\FigCircle.c" />
     <ClCompile Include="..\output\Figure.c" />
     <ClCompile Include="..\output\main.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\output\Circle.h" />
     <ClInclude Include="..\output\Container.h" />
+    <ClInclude Include="..\output\FigCircle.h" />
     <ClInclude Include="..\output\Figure.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

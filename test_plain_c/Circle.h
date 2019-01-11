@@ -14,15 +14,15 @@ typedef struct {
 //  Функции используемые для обработки круга
 
 // Инициализация существующего круга
-void Init(Circle* c, int r);
+void InitCircle(Circle* c, int r);
 
 // Создание круга с инициализаций сторон
 Circle* CreateCircleAndInit(int r);
 
 // Ввод данных в существующий круг из потока
-void In(FILE *infile, Circle* c);
+void InCircle(FILE* infile, Circle* c);
 
 // Вывод данных о круг в поток
-void Out(FILE * outfile, Circle* c);
+void OutCircle(FILE* outfile, Circle* c);
 
 #endif

@@ -84,4 +84,63 @@ std::vector<MacroDesc> macro_descs = {
       [<TypeName>]Func [<TypeName>]FuncArray[ [<Number>] ];
     )raw"
   },
+  {
+    "CREATE_SPECIALIZATION",
+    {
+      "[<Name>]",
+      "[<BaseName>]",
+      "[<SpecName>]"
+    },
+    R"raw(
+        typedef [<BaseName>] [<Name>]_base_type;
+
+        typedef struct
+        {
+            [<BaseName>] _base;
+            [<SpecName>] _spec;
+        } [<Name>];
+
+        int GetRegMark[<Name>]();
+      )raw"
+  },
+  {
+    "CREATE_REG_MARK_METHOD",
+    {
+      "[<SpecName>]"
+    },
+    R"raw(  
+      static int regMark[<SpecName>] = -1;
+	    
+      int GetRegMark[<SpecName>]()
+      {
+          return regMark[<SpecName>];
+      }
+    )raw"
+  },
+  {
+    "REGISTER_SPECIALIZATION",
+    {
+      "[<GenName>]",
+      "[<SpecName>]",
+      "[<DebugInfo>]"
+    },
+    R"raw(
+      static void InitRegMark[<SpecName>](void)
+      {
+        regMark[<SpecName>] = GetSpecNumAndIncrement[<GenName>]();
+			  if ([<DebugInfo>] != NULL) 
+        {
+          printf([<DebugInfo>]);
+          printf("   regMark: %d\n", regMark[<SpecName>]);
+			  }
+      }
+    )raw"
+  },
+  {
+    "START_REGISTER_METHODS",
+    {},
+    R"raw(
+      // is not used in plain c pplib
+    )raw"
+  },
 };

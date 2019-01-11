@@ -1,12 +1,13 @@
 // Circle.cpp - Реализация функций, осуществляющих обработку круга
 
 #include "Circle.h"
+#include <stdlib.h>
 
 //------------------------------------------------------------------------------
 //  Функции используемые для обработки круга
 
 // Инициализация существующего круга
-void Init(Circle* c, int r) {
+void InitCircle(Circle* c, int r) {
     c->r = r;
 }
 
@@ -14,16 +15,18 @@ void Init(Circle* c, int r) {
 // Создание круга с инициализаций сторон
 Circle* CreateCircleAndInit(int r) {
   Circle* pc = malloc(sizeof(Circle));
-  Init(pc, r);  
+  InitCircle(pc, r);
   return pc;
 }
 
 // Ввод данных в существующий круг из потока
-void In(FILE *infile, Circle* c) {
+void InCircle(FILE* infile, Circle* c) {
   // TODO: Read from file
+  fscanf_s(infile, "%d", &(c->r));
 }
 
 // Вывод данных о круге в поток
-void Out(FILE * outfile, Circle* c) {
+void OutCircle(FILE* outfile, Circle* c) {
   // TODO: Write circle data to file
+  fprintf_s(outfile, "Circle. R: %d\n", c->r);
 }

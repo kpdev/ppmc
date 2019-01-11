@@ -134,6 +134,7 @@ std::vector<MacroDesc> macro_descs = {
           printf("   regMark: %d\n", regMark[<SpecName>]);
 			  }
       }
+      // TODO: Register this method
     )raw"
   },
   {
@@ -143,4 +144,97 @@ std::vector<MacroDesc> macro_descs = {
       // is not used in plain c pplib
     )raw"
   },
+  {
+    "REGISTER_METHOD_WITH_CHECK_RET_PTR",
+    {
+      "[<Container>]",
+      "[<Method>]",
+      "[<DerivedClass>]",
+      "[<DebugInfo>]",
+      "[<FileMark>]",
+      "[<RetType>]"
+    },
+    R"raw(
+
+	      static [<RetType>] * __Inner_Check_[<Method>] ( int file_mark ) {
+		      if (file_mark == [<FileMark>]) {
+			      [<RetType>] *ptr = [<Method>]();
+			      return ptr;
+		      }
+		      return NULL;
+	      }
+
+      PP_REGISTER_METHOD([<Container>]FuncArray, __Inner_Check_[<Method>], GetRegMark[<DerivedClass>](), [<DebugInfo>]);      
+    )raw"
+  },
+  {
+    "PP_REGISTER_METHOD",
+    {
+      "[<Container>]",
+      "[<Method>]",
+      "[<Mark>]",
+      "[<DebugInfo>]"
+    },
+    R"raw(
+      static void [<Method>]Registrar(void)
+      {
+        printf([<DebugInfo>]);
+        [<Container>][ [<Mark>] ] = [<Method>];
+      }
+      // TODO: Register this method
+    )raw"
+  },
+  {
+    "PP_REGISTER_METHOD_WITH_CHECK",
+    {
+      "[<Container>]",
+      "[<Method>]",
+      "[<DebugInfo>]",
+      "[<DerivedClass>]",
+      PP_VARARG
+    },
+    R"raw(
+/*
+      using BaseClass = [<DerivedClass>]::base_type;
+      namespace {
+	      template <typename ... ArgsT>
+	      void __Inner_Check_[<Method>] (  BaseClass& bc, ArgsT ... args ) {
+		      if ( bc.mark == GetRegMark[<DerivedClass>]() ) {
+			      [<Method>]( static_cast<[<DerivedClass>]&>(bc), args... );
+		      }
+		      else {
+			      cerr << " [<Method>] : incorrect convertion to"
+				      << " [<DerivedClass>] \n";
+			      throw;
+		      }
+	      }
+	      auto __Inner_Check_[<Method>]FncToPass = __Inner_Check_[<Method>]< )raw" PP_VARARG R"raw( >;
+	      PP_REGISTER_METHOD([<Container>]FuncArray, __Inner_Check_[<Method>]FncToPass, GetRegMark[<DerivedClass>](), [<DebugInfo>]);
+      }
+*/
+    )raw"
+  },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 };
